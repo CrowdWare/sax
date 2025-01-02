@@ -17,6 +17,7 @@ plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose)
+    kotlin("plugin.serialization") version "1.9.0"
 }
 
 kotlin {
@@ -30,6 +31,9 @@ kotlin {
                 implementation(compose.material3)
                 implementation(compose.components.resources)
                 implementation(compose.components.uiToolingPreview)
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.7.3")
+                implementation("com.github.h0tk3y.betterParse:better-parse:0.4.4")
+                implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.0")
             }
             kotlin.srcDir(layout.buildDirectory.dir("generated/version"))
         }
