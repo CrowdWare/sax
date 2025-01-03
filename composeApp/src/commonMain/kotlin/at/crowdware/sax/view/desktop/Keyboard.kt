@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -14,34 +13,24 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import at.crowdware.sax.ui.PianoKeyboard
+import java.util.*
 
+fun selectedSquaresToHex(selectedSquares: Int): String {
+    // Ziehe 1 ab, bevor du den Wert in Hex umwandelst
+    val adjustedValue = (selectedSquares - 1).coerceAtLeast(0)  // Stelle sicher, dass der Wert nicht negativ wird
+    return adjustedValue.toString(16).uppercase(Locale.getDefault())
+}
 
 @Composable
 fun RowScope.keyboard() {
     var notes by remember { mutableStateOf(TextFieldValue("")) }
-    var selectedNoteDuration by remember { mutableStateOf("1/4") }
-
-    val durationMap = mapOf(
-        "1" to "W",    // Ganze Note
-        "1/2" to "H",  // Halbe Note
-        "1/4" to "Q",  // Viertelnote
-        "1/8" to "E",  // Achtelnote
-        "1/16" to "S", // Sechzehntelnote
-        "1/32" to "T", // Zweiunddreißigstel
-        "1/64" to "X"  // Vierundsechzigstel
-    )
+    var selectedNoteDuration by remember { mutableStateOf(4) }
 
     Row(modifier = Modifier.height(200.dp).padding(4.dp)) {
         // NoteDurationSelector links
         Column(modifier = Modifier.padding(8.dp).width(450.dp)) {
-            // Umschalter für Notenwert
-            /*NoteDurationSelector(
-                selectedDuration = selectedNoteDuration,
-                onDurationChange = { newDuration ->
-                    selectedNoteDuration = newDuration
-                }
-            )*/
-            NoteDurationSelector(onNoteDurationChange = {})
+            NoteDurationSelector( onNoteDurationChange = {newDuration ->
+                selectedNoteDuration = newDuration})
         }
 
         Column(modifier = Modifier.padding(8.dp).width(500.dp).fillMaxHeight()) {
@@ -54,7 +43,8 @@ fun RowScope.keyboard() {
             Spacer(modifier = Modifier.height(4.dp))
 
             PianoKeyboard { note ->
-                val durationKuerzel = durationMap[selectedNoteDuration] ?: selectedNoteDuration
+                println("sel: $selectedNoteDuration")
+                val durationKuerzel = selectedSquaresToHex(selectedNoteDuration)
                 val noteWithDuration = "$durationKuerzel$note"
                 val cursorPosition = notes.selection.start
                 val newText =
@@ -68,56 +58,49 @@ fun RowScope.keyboard() {
 
 @Composable
 fun NoteDurationSelector(
-    selectedDuration: String,
-    onDurationChange: (String) -> Unit
+    onNoteDurationChange: (Int) -> Unit // Rückmeldung für die ausgewählte Notenlänge
 ) {
-    Column {
-        Text("Choose note length:")
+    val maxSquares = 16 // Insgesamt 16 Quadrate
+    var selectedSquares by remember { mutableStateOf(2) } // Mindestens die ersten beiden Quadrate sind immer ausgewählt
 
-        Row(modifier = Modifier.padding(top = 8.dp)) {
-            // Erste Spalte
-            Column(modifier = Modifier.weight(1f)) {
-                listOf("1/32", "1/16", "1/8").forEach { duration ->
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        RadioButton(
-                            selected = selectedDuration == duration,
-                            onClick = { onDurationChange(duration) }
-                        )
-                        Text(duration)
-                    }
-                }
-            }
+    Column(
+        modifier = Modifier.padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "Selected Duration: ${durationToText(selectedSquares)}")
 
-            // Zweite Spalte
-            Column(modifier = Modifier.weight(1f)) {
-                listOf("1/4", "1/2", "1").forEach { duration ->
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        RadioButton(
-                            selected = selectedDuration == duration,
-                            onClick = { onDurationChange(duration) }
-                        )
-                        Text(duration)
-                    }
-                }
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Anzeige der 16 Quadrate
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        ) {
+            repeat(maxSquares) { index ->
+                val isSelected = index < selectedSquares
+                Box(
+                    modifier = Modifier
+                        .size(20.dp)
+                        .background(if (isSelected) Color.Green else Color.Gray)
+                        .clickable {
+                            selectedSquares = if (index + 1 == selectedSquares && selectedSquares > 2) {
+                                selectedSquares - 1 // Deselect, but don't go below 2
+                            } else if (index + 1 >= 2) {
+                                index + 1 // Wähle bis zum aktuellen Quadrat, aber nicht unter 2
+                            } else {
+                                selectedSquares // Falls kein gültiger Zustand erreicht wird, belassen wir den Wert
+                            }
+                            onNoteDurationChange(selectedSquares) // Callback mit neuer Länge
+                        }
+                )
             }
         }
     }
 }
+
 /*
-Note,Dauer
-C4,W    // Ganze Note
-D4,H    // Halbe Note
-E4,Q    // Viertelnote
-F4,E    // Achtelnote
-G4,S    // Sechzehntelnote
-A4,T    // Zweiunddreißigstel
-B4,X    // Vierundsechzigstel
-
-WC4,HD#4,EC4
- */
-
-
-
 @Composable
 fun NoteDurationSelector(
     onNoteDurationChange: (Int) -> Unit // Rückmeldung für die ausgewählte Notenlänge
@@ -159,7 +142,7 @@ fun NoteDurationSelector(
         }
     }
 }
-
+*/
 fun durationToText(duration: Int): String {
     return when (duration) {
         2 -> "1/8"
