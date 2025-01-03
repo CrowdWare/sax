@@ -35,7 +35,7 @@ fun aboutDialog(appName: String, version: String,
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = {
-            Text(text = "About Better-Sax")
+            Text(text = "About Playful Sax")
         },
         text = {
             Spacer(modifier = Modifier.height(16.dp))

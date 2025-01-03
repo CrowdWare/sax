@@ -41,7 +41,7 @@ import kotlinx.serialization.json.Json
 import at.crowdware.sax.viewmodel.State
 
 fun main() = application {
-    val appName = "Better-Sax"
+    val appName = "Playful-Sax"
     val version = Version.version
     var isAboutDialogOpen by  mutableStateOf(false)
     var isAskingToClose by remember { mutableStateOf(false) }
@@ -77,8 +77,6 @@ fun main() = application {
     Window(
         onCloseRequest = { isAskingToClose = true },
         title = appName,
-        //transparent = !isWindows,
-        //undecorated = !isWindows,
         resizable = true,
         state = windowState,
         icon = painterResource("desktopAppIcons/WindowsIcon.ico")

@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import sax.composeapp.generated.resources.*
 import at.crowdware.sax.theme.AppTheme
 import at.crowdware.sax.theme.LocalThemeIsDark
+import at.crowdware.sax.view.desktop.desktop
 import kotlinx.coroutines.isActive
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
@@ -41,6 +42,8 @@ import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 internal fun App() = AppTheme {
+    desktop()
+    /*
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -115,5 +118,5 @@ internal fun App() = AppTheme {
         ) {
             Text(stringResource(Res.string.open_github))
         }
-    }
+    }*/
 }
