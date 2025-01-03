@@ -10,11 +10,41 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Text
+import androidx.compose.ui.graphics.Paint
+
 import androidx.compose.ui.unit.dp
 
+
+import androidx.compose.ui.text.font.FontWeight
+
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.graphics.drawscope.DrawContext
+import androidx.compose.ui.text.TextLayoutResult
+
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.*
+
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.text.*
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import org.jetbrains.skia.*
 
 @Composable
 fun StaticStaff(pressedNotes: List<String>) {
@@ -105,8 +135,8 @@ fun PianoKeyboard(onNoteClick: (String) -> Unit) {
     )
 
     val blackNotes = listOf(
-        "C#4", "D#4", "", "F#4", "G#4", "A#4", "",  // Erste Oktave
-        "C#5", "D#5", "", "F#5", "G#5", "A#5", ""   // Zweite Oktave
+        "C#4", "D#4", "F#4", "G#4", "A#4", "","", // Erste Oktave
+        "C#5", "D#5", "F#5", "G#5", "A#5"   // Zweite Oktave
     )
 
     Canvas(modifier = Modifier
@@ -163,6 +193,9 @@ fun PianoKeyboard(onNoteClick: (String) -> Unit) {
                 size = Size(whiteKeyWidth, size.height),
                 style = Stroke(width = 2f)
             )
+            // Draw note text above the white keys
+            val note = whiteNotes[i].substring(0,1)
+            drawNoteText(note, i * whiteKeyWidth + whiteKeyWidth / 2 - 7, size.height -10)
         }
 
         // Draw black keys
@@ -175,8 +208,33 @@ fun PianoKeyboard(onNoteClick: (String) -> Unit) {
                     topLeft = Offset(x, 0f),
                     size = Size(blackKeyWidth, blackKeyHeight)
                 )
+                // Draw note text above the black keys
+                //val note = blackNotes.getOrNull(octave * 7 + index)
+                //if (!note.isNullOrBlank()) {
+                //    drawNoteText(note.substring(0,2), x + blackKeyWidth / 2 - 9, -10F) // Adjust y for positioning above key
+                //}
             }
         }
+    }
+}
+
+// Helper function to draw text on the canvas
+fun DrawScope.drawNoteText(note: String, x: Float, y: Float) {
+    drawIntoCanvas { canvas ->
+        val font = Font()
+        font.size = 18F
+        val paint = org.jetbrains.skia.Paint().apply {
+            color = org.jetbrains.skia.Color.BLACK
+        }
+
+        val textLine = TextLine.make(note, font)
+
+        canvas.nativeCanvas.drawTextLine(
+            textLine,
+            x,
+            y,
+            paint
+        )
     }
 }
 fun noteToKeyIndex(note: String): Int? {
@@ -186,3 +244,14 @@ fun noteToKeyIndex(note: String): Int? {
     )
     return allNotes.indexOf(note)
 }
+/*
+fun noteToKeyIndex(note: String): Int? {
+    val allNotes = listOf(
+        "C4", "C#4", "D4", "D#4", "E4",
+        "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4",
+        "C5", "C#5", "D5", "D#5", "E5",
+        "F5", "F#5", "G5", "G#5", "A5", "A#5", "B5"
+    )
+    return allNotes.indexOf(note)
+}*/
+

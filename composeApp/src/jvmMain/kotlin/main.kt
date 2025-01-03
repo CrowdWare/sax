@@ -28,6 +28,7 @@ import androidx.compose.ui.window.rememberWindowState
 import java.awt.Dimension
 import at.crowdware.sax.App
 import at.crowdware.sax.Version
+import at.crowdware.sax.theme.LocalThemeIsDark
 import at.crowdware.sax.ui.aboutDialog
 import at.crowdware.sax.viewmodel.GlobalAppState
 import at.crowdware.sax.viewmodel.createAppState
@@ -41,12 +42,12 @@ import kotlinx.serialization.json.Json
 import at.crowdware.sax.viewmodel.State
 
 fun main() = application {
-    val appName = "Playful-Sax"
+    val appName = "Playful Sax"
     val version = Version.version
     var isAboutDialogOpen by  mutableStateOf(false)
     var isAskingToClose by remember { mutableStateOf(false) }
     val appState = createAppState()
-
+    LocalThemeIsDark.current
     GlobalAppState.appState = appState
     loadAppState()
 

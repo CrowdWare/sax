@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
@@ -18,7 +19,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun RowScope.playScreen() {
     var totalHeight by remember { mutableStateOf(0f) }
-    Column( modifier = Modifier.weight(1f).fillMaxHeight().background(color = MaterialTheme.colors.primary)
+    Column( modifier = Modifier.weight(1f).fillMaxHeight().background(color = MaterialTheme.colors.primary).padding(4.dp)
         .onGloballyPositioned { coordinates ->
             totalHeight = coordinates.size.height.toFloat()
         }) {
@@ -29,37 +30,22 @@ fun RowScope.playScreen() {
             style = TextStyle(color = MaterialTheme.colors.onPrimary),
             overflow = TextOverflow.Ellipsis
         )
-        Canvas(modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.surface)) {
-            drawCircle(
-                color = Color.Yellow,
-                radius = 30f,
-                center = Offset(50f, 150f)
+        Canvas(modifier = Modifier.fillMaxSize().background(Color.Black)) {
+            val circleData = listOf(
+                Pair(Color(0xFFFBF68C), listOf(150f, 220f, 290f)),
+                Pair(Color(0xFF9DD9FD), listOf(380f, 450f, 520f))
             )
-            drawCircle(
-                color = Color.Yellow,
-                radius = 30f,
-                center = Offset(50f, 220f)
-            )
-            drawCircle(
-                color = Color.Yellow,
-                radius = 30f,
-                center = Offset(50f, 290f)
-            )
-            drawCircle(
-                color = Color.Blue,
-                radius = 30f,
-                center = Offset(50f, 380f)
-            )
-            drawCircle(
-                color = Color.Blue,
-                radius = 30f,
-                center = Offset(50f, 450f)
-            )
-            drawCircle(
-                color = Color.Blue,
-                radius = 30f,
-                center = Offset(50f, 520f)
-            )
+
+            circleData.forEach { (color, positions) ->
+                positions.forEach { yPos ->
+                    drawCircle(
+                        color = color,
+                        radius = 24f,
+                        center = Offset(50f, yPos),
+                        style = Stroke(width = 4f)
+                    )
+                }
+            }
         }
     }
 }

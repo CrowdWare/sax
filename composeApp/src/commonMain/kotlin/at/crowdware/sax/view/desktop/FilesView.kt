@@ -22,7 +22,6 @@ package at.crowdware.sax.view.desktop
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
@@ -32,16 +31,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerIcon
-import androidx.compose.ui.input.pointer.pointerHoverIcon
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
@@ -51,10 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import at.crowdware.sax.model.NodeType
 import at.crowdware.sax.model.TreeNode
-import at.crowdware.sax.model.extensionToNodeType
 import at.crowdware.sax.ui.TreeView
-import java.awt.Cursor
-import java.io.File
 
 fun addChild(parent: TreeNode, child: TreeNode) {
     parent.children.add(child) // Modify the children directly
@@ -77,14 +67,14 @@ fun filesView() {
     val bluesNode = TreeNode(
         title = mutableStateOf( "Blues"),
         path = "",
-        type = NodeType.SML,
+        type = NodeType.DIRECTORY,
         children = bluesChildren
     )
 
     val jazzNode = TreeNode(
         title = mutableStateOf( "Jazz"),
         path = "",
-        type = NodeType.SML,
+        type = NodeType.DIRECTORY,
         children = jazzChildren
     )
     treeData = treeData + bluesNode + jazzNode
@@ -105,7 +95,7 @@ fun filesView() {
     addChild(bluesNode, deltaBluesNode)
 
     Column(
-        modifier = Modifier.width(320.dp).fillMaxHeight().background(color = MaterialTheme.colors.primary)
+        modifier = Modifier.width(200.dp).fillMaxHeight().background(color = MaterialTheme.colors.primary).padding(4.dp)
             .onGloballyPositioned { coordinates ->
                 totalHeight = coordinates.size.height.toFloat()
             }) {
