@@ -24,24 +24,23 @@ fun selectedSquaresToHex(selectedSquares: Int): String {
 @Composable
 fun RowScope.keyboard() {
     var notes by remember { mutableStateOf(TextFieldValue("")) }
-    var selectedNoteDuration by remember { mutableStateOf(4) }
+    var selectedNoteDuration by remember { mutableStateOf(2) }
 
-    Row(modifier = Modifier.height(200.dp).padding(4.dp)) {
+    Row(modifier = Modifier.height(160.dp).padding(4.dp)) {
         // NoteDurationSelector links
         Column(modifier = Modifier.padding(8.dp).width(450.dp)) {
             NoteDurationSelector( onNoteDurationChange = {newDuration ->
                 selectedNoteDuration = newDuration})
-        }
-
-        Column(modifier = Modifier.padding(8.dp).width(500.dp).fillMaxHeight()) {
+            Spacer(modifier = Modifier.height(4.dp))
             OutlinedTextField(
                 value = notes,
                 onValueChange = { notes = it },
                 label = { Text("Notes") },
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(4.dp))
+        }
 
+        Column(modifier = Modifier.padding(8.dp).width(500.dp).fillMaxHeight()) {
             PianoKeyboard { note ->
                 println("sel: $selectedNoteDuration")
                 val durationKuerzel = selectedSquaresToHex(selectedNoteDuration)

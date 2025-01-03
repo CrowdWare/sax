@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun RowScope.notesDisplay() {
-    Column(modifier = Modifier.weight(1F).background(color = MaterialTheme.colors.background).height(200.dp)) {
+    Column(modifier = Modifier.weight(1F).background(color = MaterialTheme.colors.background).height(160.dp)) {
         BasicText(
             text = "Notes",
             modifier = Modifier.padding(8.dp),
