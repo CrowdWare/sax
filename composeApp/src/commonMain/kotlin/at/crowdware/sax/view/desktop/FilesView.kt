@@ -27,8 +27,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
@@ -44,6 +44,12 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import at.crowdware.sax.model.NodeType
 import at.crowdware.sax.model.TreeNode
+import at.crowdware.sax.theme.*
+import at.crowdware.sax.theme.LocalThemeIsDark
+import at.crowdware.sax.theme.OnPrimaryDark
+import at.crowdware.sax.theme.OnPrimaryLight
+import at.crowdware.sax.theme.PrimaryDark
+import at.crowdware.sax.theme.PrimaryLight
 import at.crowdware.sax.ui.TreeView
 
 fun addChild(parent: TreeNode, child: TreeNode) {
@@ -95,7 +101,7 @@ fun filesView() {
     addChild(bluesNode, deltaBluesNode)
 
     Column(
-        modifier = Modifier.width(200.dp).fillMaxHeight()/*.background(color = MaterialTheme.colors.primary)*/.padding(4.dp)
+        modifier = Modifier.width(200.dp).fillMaxHeight().background(color = MaterialTheme.colorScheme.primary).padding(4.dp)
             .onGloballyPositioned { coordinates ->
                 totalHeight = coordinates.size.height.toFloat()
             }) {
@@ -103,7 +109,7 @@ fun filesView() {
             text = "Project Structure",
             modifier = Modifier.padding(8.dp),
             maxLines = 1,
-            //style = TextStyle(color = MaterialTheme.colors.onPrimary),
+            style = TextStyle(color = MaterialTheme.colorScheme.onPrimary),
             overflow = TextOverflow.Ellipsis
         )
 
@@ -111,7 +117,7 @@ fun filesView() {
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(treeViewHeight)
-                .background(MaterialTheme.colors.surface)
+                .background(MaterialTheme.colorScheme.surface)
                 .onGloballyPositioned { layoutCoordinates ->
                     treeViewSize = layoutCoordinates.size
                 }
@@ -152,11 +158,11 @@ fun filesView() {
                 DropdownMenu(
                     modifier = Modifier
                         .background(
-                            color = MaterialTheme.colors.primary,
+                            color = MaterialTheme.colorScheme.primary,
                             shape = RoundedCornerShape(8.dp)
                         )
                         .border(
-                            border = BorderStroke(1.dp, color = MaterialTheme.colors.primary),
+                            border = BorderStroke(1.dp, color = MaterialTheme.colorScheme.primary),
                             shape = RoundedCornerShape(8.dp)
                         ),
                     expanded = expanded,

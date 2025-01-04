@@ -5,15 +5,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import at.crowdware.sax.ui.PianoKeyboard
-import java.util.*
 
 fun getLetterForDuration(duration: Int): String {
     return when(duration) {
@@ -43,7 +44,8 @@ fun RowScope.keyboard() {
                 value = notes,
                 onValueChange = { notes = it },
                 label = { Text("Notes") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+
             )
         }
 
@@ -80,7 +82,8 @@ fun NoteDurationSelector(
         modifier = Modifier.padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Selected Duration: ${durationToText(selectedDuration)}")
+        Text(text = "Selected Duration: ${durationToText(selectedDuration)}",
+            style = TextStyle(color = MaterialTheme.colorScheme.onPrimary))
 
         Spacer(modifier = Modifier.height(4.dp))
 

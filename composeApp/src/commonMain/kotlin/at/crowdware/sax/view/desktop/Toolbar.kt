@@ -22,10 +22,10 @@ package at.crowdware.sax.view.desktop
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AddBusiness
 import androidx.compose.material.icons.outlined.CheckBox
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -57,14 +57,14 @@ import sax.composeapp.generated.resources.ic_light_mode
 fun toolbar() {
     var isDark by LocalThemeIsDark.current
     Column(
-        modifier = Modifier.width(52.dp).fillMaxHeight()/*.background(color = MaterialTheme.colors.primary)*/,
+        modifier = Modifier.width(52.dp).fillMaxHeight().background(color = MaterialTheme.colorScheme.primary),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         BasicText(
             text = "Build",
             modifier = Modifier.padding(8.dp),
             maxLines = 1,
-            //style = TextStyle(color = MaterialTheme.colors.onPrimary),
+            style = TextStyle(color = MaterialTheme.colorScheme.onPrimary),
             overflow = TextOverflow.Ellipsis
         )
 
@@ -81,7 +81,7 @@ fun toolbar() {
             else Res.drawable.ic_dark_mode
         }
         HoverableIcon(
-            onClick = { isDark = !isDark},
+            onClick = { isDark = !isDark },
             painter = painterResource(icon),
             tooltipText = "Toogle Theme",
             isSelected = false

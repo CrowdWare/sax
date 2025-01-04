@@ -41,8 +41,10 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
 @Composable
-internal fun App() = AppTheme {
-    desktop()
+internal fun App() {
+    AppTheme {
+        desktop()
+    }
 /*
     Column(
         modifier = Modifier

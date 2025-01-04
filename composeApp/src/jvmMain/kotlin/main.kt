@@ -18,6 +18,8 @@
  */
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.res.painterResource
@@ -47,7 +49,7 @@ fun main() = application {
     var isAboutDialogOpen by  mutableStateOf(false)
     var isAskingToClose by remember { mutableStateOf(false) }
     val appState = createAppState()
-    LocalThemeIsDark.current
+    //LocalThemeIsDark.current
     GlobalAppState.appState = appState
     loadAppState()
 

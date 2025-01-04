@@ -4,7 +4,8 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -19,7 +20,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun RowScope.playScreen() {
     var totalHeight by remember { mutableStateOf(0f) }
-    Column( modifier = Modifier.weight(1f).fillMaxHeight()/*.background(color = MaterialTheme.colors.primary)*/.padding(4.dp)
+    Column( modifier = Modifier.weight(1f).fillMaxHeight().background(color = MaterialTheme.colorScheme.primary).padding(4.dp)
         .onGloballyPositioned { coordinates ->
             totalHeight = coordinates.size.height.toFloat()
         }) {
@@ -27,7 +28,7 @@ fun RowScope.playScreen() {
             text = "Song",
             modifier = Modifier.padding(8.dp),
             maxLines = 1,
-            //style = TextStyle(color = MaterialTheme.colors.onPrimary),
+            style = TextStyle(color = MaterialTheme.colorScheme.onPrimary),
             overflow = TextOverflow.Ellipsis
         )
         Canvas(modifier = Modifier.fillMaxSize().background(Color.Black)) {
