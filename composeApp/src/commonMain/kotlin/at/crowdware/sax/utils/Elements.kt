@@ -28,4 +28,16 @@ import java.time.LocalDateTime
 data class Song (
     var smlVersion: String = "1.1",
     var name: String = "",
+    val bars: List<Bar>
+)
+
+data class Note(
+    val duration: Int,          // Dauer in Achteln
+    val pitch: String?,         // Note (z. B. "C5") oder `null` für Pause
+    val isTied: Boolean = false // Kennzeichnung, ob die Note übergebunden ist
+)
+
+data class Bar(
+    val sign: String,           // Taktart (z. B. "4/4")
+    val notes: List<Note>       // Liste der Noten in dieser Bar
 )

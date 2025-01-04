@@ -3,17 +3,22 @@ package at.crowdware.sax.view.desktop
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import at.crowdware.sax.ui.PianoKeyboard
 
 fun getLetterForDuration(duration: Int): String {
@@ -37,16 +42,24 @@ fun RowScope.keyboard() {
     Row(modifier = Modifier.height(160.dp).padding(4.dp)) {
         // NoteDurationSelector links
         Column(modifier = Modifier.padding(8.dp).width(450.dp)) {
-            NoteDurationSelector( onNoteDurationChange = {newDuration ->
-                selectedNoteDuration = newDuration})
+            NoteDurationSelector(onNoteDurationChange = { newDuration ->
+                selectedNoteDuration = newDuration
+            })
             Spacer(modifier = Modifier.height(4.dp))
-            OutlinedTextField(
-                value = notes,
-                onValueChange = { notes = it },
-                label = { Text("Notes") },
-                modifier = Modifier.fillMaxWidth(),
-
-            )
+            Column(modifier = Modifier.background(color=MaterialTheme.colorScheme.background).padding(4.dp)) {
+                BasicTextField(
+                    value = notes,
+                    onValueChange = { notes = it },
+                    modifier = Modifier.fillMaxWidth().background(Color.Transparent),
+                    singleLine = true,
+                    textStyle = TextStyle(
+                        fontFamily = FontFamily.Monospace,
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onBackground
+                    ),
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
+                )
+            }
         }
 
         Column(modifier = Modifier.padding(8.dp).width(500.dp).fillMaxHeight()) {
