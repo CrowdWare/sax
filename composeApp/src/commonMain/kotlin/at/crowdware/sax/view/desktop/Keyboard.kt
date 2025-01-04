@@ -15,10 +15,17 @@ import androidx.compose.ui.unit.dp
 import at.crowdware.sax.ui.PianoKeyboard
 import java.util.*
 
-fun selectedSquaresToHex(selectedSquares: Int): String {
-    // Ziehe 1 ab, bevor du den Wert in Hex umwandelst
-    val adjustedValue = (selectedSquares - 1).coerceAtLeast(0)  // Stelle sicher, dass der Wert nicht negativ wird
-    return adjustedValue.toString(16).uppercase(Locale.getDefault())
+fun getLetterForDuration(duration: Int): String {
+    return when(duration) {
+        2 -> "E"    // Achtelnote
+        3 -> "e"    // Punktierte Achtelnote
+        4 -> "Q"    // Viertelnote
+        6 -> "q"     // Punktierte Viertelnote
+        8 -> "H"     // Halbe Note
+        12 -> "h"    // Punktierte Halbe Note
+        16 -> "W"   // Ganze Note
+        else -> {"x"}
+    }
 }
 
 @Composable
@@ -42,14 +49,12 @@ fun RowScope.keyboard() {
 
         Column(modifier = Modifier.padding(8.dp).width(500.dp).fillMaxHeight()) {
             PianoKeyboard { note ->
-                println("sel: $selectedNoteDuration")
-                val durationKuerzel = selectedSquaresToHex(selectedNoteDuration)
+                val durationKuerzel = getLetterForDuration(selectedNoteDuration)
                 val noteWithDuration = "$durationKuerzel$note"
                 val cursorPosition = notes.selection.start
                 val newText =
                     notes.text.substring(0, cursorPosition) + noteWithDuration + "," + notes.text.substring(cursorPosition)
                 notes = TextFieldValue(newText, TextRange(cursorPosition + noteWithDuration.length + 1))
-                println("Note clicked: $note")
             }
         }
     }
@@ -59,100 +64,81 @@ fun RowScope.keyboard() {
 fun NoteDurationSelector(
     onNoteDurationChange: (Int) -> Unit // Rückmeldung für die ausgewählte Notenlänge
 ) {
-    val maxSquares = 16 // Insgesamt 16 Quadrate
-    var selectedSquares by remember { mutableStateOf(2) } // Mindestens die ersten beiden Quadrate sind immer ausgewählt
+    val durationGroups = listOf(
+        2, // Achtelnote
+        3, // Punktierte Achtelnote
+        4, // Viertelnote
+        6, // Punktierte Viertelnote
+        8, // Halbe Note
+        12, // Punktierte Halbe Note
+        16 // Ganze Note
+    )
+
+    var selectedDuration by remember { mutableStateOf(2) } // Standardmäßig Achtelnote ausgewählt
 
     Column(
         modifier = Modifier.padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Selected Duration: ${durationToText(selectedSquares)}")
+        Text(text = "Selected Duration: ${durationToText(selectedDuration)}")
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
-        // Anzeige der 16 Quadrate
+        // Anzeige der Gruppen
         Row(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
-            repeat(maxSquares) { index ->
-                val isSelected = index < selectedSquares
+            durationGroups.forEach { duration ->
+                val isSelected = selectedDuration >= duration
                 Box(
                     modifier = Modifier
-                        .size(20.dp)
+                        .width(
+                            when (duration) {
+                                2 -> 40.dp  // Achtelnote (2 Quadrate)
+                                3 -> 20.dp  // Punktierte Achtelnote (3 Quadrate)
+                                4 -> 20.dp  // Viertelnote (4 Quadrate)
+                                6 -> 44.dp // Punktierte Viertelnote (6 Quadrate)
+                                8 -> 44.dp // Halbe Note (8 Quadrate)
+                                12 -> 92.dp // Punktierte Halbe Note (12 Quadrate)
+                                16 -> 92.dp // Ganze Note (16 Quadrate)
+                                else -> 40.dp
+                            }
+                        )
+                        .height(25.dp)
                         .background(if (isSelected) Color.Green else Color.Gray)
                         .clickable {
-                            selectedSquares = if (index + 1 == selectedSquares && selectedSquares > 2) {
-                                selectedSquares - 1 // Deselect, but don't go below 2
-                            } else if (index + 1 >= 2) {
-                                index + 1 // Wähle bis zum aktuellen Quadrat, aber nicht unter 2
-                            } else {
-                                selectedSquares // Falls kein gültiger Zustand erreicht wird, belassen wir den Wert
-                            }
-                            onNoteDurationChange(selectedSquares) // Callback mit neuer Länge
+                            selectedDuration = duration
+                            onNoteDurationChange(selectedDuration)
                         }
                 )
             }
         }
+    }
+}
+
+// Funktion zur Umwandlung der Dauer in Text (z. B. "1/4" oder "1/8")
+fun durationToText(duration: Int): String {
+    return when (duration) {
+        2 -> "Eighth note"  // Achtelnote
+        3 -> "Dotted eighth note" // Punktierte Achtelnote
+        4 -> "Quarter note"  // Viertelnote
+        6 -> "Dotted quarter note" // Punktierte Viertelnote
+        8 -> "Half note"  // Halbe Note
+        12 -> "Dotted half note" // Punktierte Halbe Note
+        16 -> "Whole note"   // Ganze Note
+        else -> "Unknown"
     }
 }
 
 /*
-@Composable
-fun NoteDurationSelector(
-    onNoteDurationChange: (Int) -> Unit // Rückmeldung für die ausgewählte Notenlänge
-) {
-    val maxSquares = 16 // Insgesamt 16 Quadrate
-    var selectedSquares by remember { mutableStateOf(0) } // Anzahl ausgewählter Quadrate
-
-    Column(
-        modifier = Modifier.padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Selected Duration: ${durationToText(selectedSquares)}")
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Anzeige der 16 Quadrate
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        ) {
-            repeat(maxSquares) { index ->
-                val isSelected = index < selectedSquares
-                Box(
-                    modifier = Modifier
-                        .size(20.dp)
-                        .background(if (isSelected) Color.Green else Color.Gray)
-                        .clickable {
-                            selectedSquares = if (index + 1 == selectedSquares) {
-                                0 // Deselektieren
-                            } else {
-                                index + 1 // Auswählen bis zu diesem Quadrat
-                            }
-                            onNoteDurationChange(selectedSquares) // Callback mit neuer Länge
-                        }
-                )
-            }
-        }
-    }
-}
-*/
-fun durationToText(duration: Int): String {
-    return when (duration) {
-        2 -> "1/8"
-        3 -> "1/8 Punktiert"
-        4 -> "1/4"
-        6 -> "1/4 Punktiert"
-        8 -> "1/2"
-        12 -> "1/2 Punktiert"
-        16 -> "1"
-        else -> "${duration}/16" // Benutzerdefinierte Länge
-    }
-}
-
-
+    1/8     E       XX                  0,1
+    1/8.    e       XXX                 2
+    1/4     Q       XXXX                3
+    1/4.    q       XXXXXX              5
+    1/2     H       XXXXXXXX            7
+    1/2.    h       XXXXXXXXXXXX        11
+    1/1     W       XXXXXXXXXXXXXXXX    15
+ */
