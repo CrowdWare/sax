@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import at.crowdware.sax.model.NodeType
 import at.crowdware.sax.model.TreeNode
+import at.crowdware.sax.theme.LocalThemeIsDark
 
 @Composable
 fun fileTreeIconProvider(node: TreeNode) {
@@ -33,7 +34,7 @@ fun desktop() {
             filesView()
             playScreen()
         }
-        Row (modifier = Modifier.background(color=MaterialTheme.colors.background).fillMaxWidth()){
+        Row (modifier = Modifier/*.background(color=MaterialTheme.colors.background)*/.fillMaxWidth()){
             notesDisplay()
             keyboard()
         }

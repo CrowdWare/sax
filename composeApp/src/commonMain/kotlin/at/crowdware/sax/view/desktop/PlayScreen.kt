@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun RowScope.playScreen() {
     var totalHeight by remember { mutableStateOf(0f) }
-    Column( modifier = Modifier.weight(1f).fillMaxHeight().background(color = MaterialTheme.colors.primary).padding(4.dp)
+    Column( modifier = Modifier.weight(1f).fillMaxHeight()/*.background(color = MaterialTheme.colors.primary)*/.padding(4.dp)
         .onGloballyPositioned { coordinates ->
             totalHeight = coordinates.size.height.toFloat()
         }) {
@@ -27,7 +27,7 @@ fun RowScope.playScreen() {
             text = "Song",
             modifier = Modifier.padding(8.dp),
             maxLines = 1,
-            style = TextStyle(color = MaterialTheme.colors.onPrimary),
+            //style = TextStyle(color = MaterialTheme.colors.onPrimary),
             overflow = TextOverflow.Ellipsis
         )
         Canvas(modifier = Modifier.fillMaxSize().background(Color.Black)) {

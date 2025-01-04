@@ -20,9 +20,9 @@ fun getLetterForDuration(duration: Int): String {
         2 -> "E"    // Achtelnote
         3 -> "e"    // Punktierte Achtelnote
         4 -> "Q"    // Viertelnote
-        6 -> "q"     // Punktierte Viertelnote
-        8 -> "H"     // Halbe Note
-        12 -> "h"    // Punktierte Halbe Note
+        6 -> "q"    // Punktierte Viertelnote
+        8 -> "H"    // Halbe Note
+        12 -> "h"   // Punktierte Halbe Note
         16 -> "W"   // Ganze Note
         else -> {"x"}
     }
@@ -65,13 +65,13 @@ fun NoteDurationSelector(
     onNoteDurationChange: (Int) -> Unit // Rückmeldung für die ausgewählte Notenlänge
 ) {
     val durationGroups = listOf(
-        2, // Achtelnote
-        3, // Punktierte Achtelnote
-        4, // Viertelnote
-        6, // Punktierte Viertelnote
-        8, // Halbe Note
+        2,  // Achtelnote
+        3,  // Punktierte Achtelnote
+        4,  // Viertelnote
+        6,  // Punktierte Viertelnote
+        8,  // Halbe Note
         12, // Punktierte Halbe Note
-        16 // Ganze Note
+        16  // Ganze Note
     )
 
     var selectedDuration by remember { mutableStateOf(2) } // Standardmäßig Achtelnote ausgewählt
@@ -100,8 +100,8 @@ fun NoteDurationSelector(
                                 2 -> 40.dp  // Achtelnote (2 Quadrate)
                                 3 -> 20.dp  // Punktierte Achtelnote (3 Quadrate)
                                 4 -> 20.dp  // Viertelnote (4 Quadrate)
-                                6 -> 44.dp // Punktierte Viertelnote (6 Quadrate)
-                                8 -> 44.dp // Halbe Note (8 Quadrate)
+                                6 -> 44.dp  // Punktierte Viertelnote (6 Quadrate)
+                                8 -> 44.dp  // Halbe Note (8 Quadrate)
                                 12 -> 92.dp // Punktierte Halbe Note (12 Quadrate)
                                 16 -> 92.dp // Ganze Note (16 Quadrate)
                                 else -> 40.dp
@@ -119,26 +119,15 @@ fun NoteDurationSelector(
     }
 }
 
-// Funktion zur Umwandlung der Dauer in Text (z. B. "1/4" oder "1/8")
 fun durationToText(duration: Int): String {
     return when (duration) {
-        2 -> "Eighth note"  // Achtelnote
-        3 -> "Dotted eighth note" // Punktierte Achtelnote
-        4 -> "Quarter note"  // Viertelnote
-        6 -> "Dotted quarter note" // Punktierte Viertelnote
-        8 -> "Half note"  // Halbe Note
-        12 -> "Dotted half note" // Punktierte Halbe Note
-        16 -> "Whole note"   // Ganze Note
+        2 -> "Eighth note"          // Achtelnote
+        3 -> "Dotted eighth note"   // Punktierte Achtelnote
+        4 -> "Quarter note"         // Viertelnote
+        6 -> "Dotted quarter note"  // Punktierte Viertelnote
+        8 -> "Half note"            // Halbe Note
+        12 -> "Dotted half note"    // Punktierte Halbe Note
+        16 -> "Whole note"          // Ganze Note
         else -> "Unknown"
     }
 }
-
-/*
-    1/8     E       XX                  0,1
-    1/8.    e       XXX                 2
-    1/4     Q       XXXX                3
-    1/4.    q       XXXXXX              5
-    1/2     H       XXXXXXXX            7
-    1/2.    h       XXXXXXXXXXXX        11
-    1/1     W       XXXXXXXXXXXXXXXX    15
- */

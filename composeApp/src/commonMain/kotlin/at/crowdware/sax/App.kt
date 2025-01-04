@@ -43,7 +43,7 @@ import org.jetbrains.compose.resources.vectorResource
 @Composable
 internal fun App() = AppTheme {
     desktop()
-    /*
+/*
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -118,5 +118,6 @@ internal fun App() = AppTheme {
         ) {
             Text(stringResource(Res.string.open_github))
         }
-    }*/
+    }
+ */
 }

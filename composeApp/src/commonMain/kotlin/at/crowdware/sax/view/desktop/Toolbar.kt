@@ -27,6 +27,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AddBusiness
 import androidx.compose.material.icons.outlined.CheckBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -44,18 +47,24 @@ import compose.icons.fontawesomeicons.solid.FolderOpen
 import compose.icons.fontawesomeicons.solid.Palette
 import compose.icons.fontawesomeicons.solid.PlusCircle
 import androidx.compose.ui.res.painterResource
+import at.crowdware.sax.theme.LocalThemeIsDark
+import org.jetbrains.compose.resources.painterResource
+import sax.composeapp.generated.resources.Res
+import sax.composeapp.generated.resources.ic_dark_mode
+import sax.composeapp.generated.resources.ic_light_mode
 
 @Composable
 fun toolbar() {
+    var isDark by LocalThemeIsDark.current
     Column(
-        modifier = Modifier.width(52.dp).fillMaxHeight().background(color = MaterialTheme.colors.primary),
+        modifier = Modifier.width(52.dp).fillMaxHeight()/*.background(color = MaterialTheme.colors.primary)*/,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         BasicText(
             text = "Build",
             modifier = Modifier.padding(8.dp),
             maxLines = 1,
-            style = TextStyle(color = MaterialTheme.colors.onPrimary),
+            //style = TextStyle(color = MaterialTheme.colors.onPrimary),
             overflow = TextOverflow.Ellipsis
         )
 
@@ -64,6 +73,17 @@ fun toolbar() {
             onClick = { },
             painter = painterResource("drawable/create_folder.xml"),
             tooltipText = "Create new Song",
+            isSelected = false
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        val icon = remember(isDark) {
+            if (isDark) Res.drawable.ic_light_mode
+            else Res.drawable.ic_dark_mode
+        }
+        HoverableIcon(
+            onClick = { isDark = !isDark},
+            painter = painterResource(icon),
+            tooltipText = "Toogle Theme",
             isSelected = false
         )
         /*

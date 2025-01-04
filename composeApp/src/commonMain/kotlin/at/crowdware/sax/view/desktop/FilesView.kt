@@ -95,7 +95,7 @@ fun filesView() {
     addChild(bluesNode, deltaBluesNode)
 
     Column(
-        modifier = Modifier.width(200.dp).fillMaxHeight().background(color = MaterialTheme.colors.primary).padding(4.dp)
+        modifier = Modifier.width(200.dp).fillMaxHeight()/*.background(color = MaterialTheme.colors.primary)*/.padding(4.dp)
             .onGloballyPositioned { coordinates ->
                 totalHeight = coordinates.size.height.toFloat()
             }) {
@@ -103,7 +103,7 @@ fun filesView() {
             text = "Project Structure",
             modifier = Modifier.padding(8.dp),
             maxLines = 1,
-            style = TextStyle(color = MaterialTheme.colors.onPrimary),
+            //style = TextStyle(color = MaterialTheme.colors.onPrimary),
             overflow = TextOverflow.Ellipsis
         )
 
