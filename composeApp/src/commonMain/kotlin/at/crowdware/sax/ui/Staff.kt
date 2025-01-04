@@ -144,7 +144,7 @@ fun BarStaff(bar: Bar, startX: Float, modifier: Modifier = Modifier) {
                         y = y - rectHeight / 2 // Zentriere das Rechteck auf der Y-Achse
                     ),
                     size = Size(
-                        width = note.duration * stepX, // Breite proportional zur Dauer
+                        width = note.duration * stepX -5, // Breite proportional zur Dauer
                         height = rectHeight // Konstante Höhe des Rechtecks
                     ),
                     cornerRadius = CornerRadius(x = 5f, y = 5f) // Abgerundete Ecken
