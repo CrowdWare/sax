@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -66,6 +67,8 @@ fun calculateNoteY(note: String): Float {
     val position = notePositionMap[note] ?: error("Unknown note: $note")
     return baseY - (position * step) // Nach oben bewegen sich die Y-Werte nach unten
 }
+
+/*
 @Composable
 fun BarStaff(bar: Bar, startX: Float, modifier: Modifier = Modifier) {
     val staffHeight = 150f
@@ -104,12 +107,13 @@ fun BarStaff(bar: Bar, startX: Float, modifier: Modifier = Modifier) {
             currentX += note.duration * stepX
         }
     }
-}
-/*
+}*/
+
 @Composable
 fun BarStaff(bar: Bar, startX: Float, modifier: Modifier = Modifier) {
-    val staffHeight = 150f // Höhe des Notensystems
-    val staffLines = listOf(120f, 100f, 80f, 60f, 40f) // Positionen der 5 Linien
+    val staffHeight = 150f
+    val staffLines = listOf(120f, 100f, 80f, 60f, 40f) // Die fünf Linien des Notensystems
+    val rectHeight = 14f // Höhe der Rechtecke für Noten
 
     // Gesamtdauer der Noten in der Bar
     val totalDuration = bar.notes.sumOf { it.duration }
@@ -125,30 +129,34 @@ fun BarStaff(bar: Bar, startX: Float, modifier: Modifier = Modifier) {
             )
         }
 
-        // Berechne den horizontalen Schritt pro Achtel
+        // Berechne die horizontale Schrittweite pro Achtel
         val stepX = size.width / totalDuration
 
-        // Zeichne jede Note
-        var currentX = 0f
+        // Zeichne die Noten
+        var currentX = startX
         bar.notes.forEach { note ->
             if (note.pitch != null) {
-                // Zeichne die Note
                 val y = calculateNoteY(note.pitch)
-                drawCircle(
-                    color = Color.Black,
-                    radius = 8f,
-                    center = Offset(currentX + startX, y)
+                drawRoundRect(
+                    color = Color.Green,
+                    topLeft = Offset(
+                        x = currentX,
+                        y = y - rectHeight / 2 // Zentriere das Rechteck auf der Y-Achse
+                    ),
+                    size = Size(
+                        width = note.duration * stepX, // Breite proportional zur Dauer
+                        height = rectHeight // Konstante Höhe des Rechtecks
+                    ),
+                    cornerRadius = CornerRadius(x = 5f, y = 5f) // Abgerundete Ecken
                 )
-            } else {
-                // Zeichne Pausen (optional, hier ausgelassen)
             }
 
-            // Aktualisiere die X-Position basierend auf der Dauer der Note
+            // Aktualisiere die X-Position basierend auf der Notendauer
             currentX += note.duration * stepX
         }
     }
 }
-*/
+
 fun calculateBarWidth(bar: Bar): Float {
     val noteWidth = 40f // Breite einer Note
     val baseWidth = 50f // Basisbreite der Bar (für Balkenanfang und -ende)
@@ -199,6 +207,7 @@ fun DrawScope.drawNoteOnStaff(note: Note, lineSpacing: Float, positionX: Float) 
         )
     }
 }
+
 
 // Bestimme, auf welcher Linie die Note gezeichnet werden soll (höhere Tonhöhe -> höher in der Liste)
 fun noteToStaffLine(pitch: String): Int {

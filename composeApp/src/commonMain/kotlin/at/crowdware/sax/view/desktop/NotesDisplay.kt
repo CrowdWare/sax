@@ -34,6 +34,20 @@ fun RowScope.notesDisplay() {
                         Note(duration = 4, pitch = "B4"),
                         Note(duration = 4, pitch = "C5")
                     )
+                ),
+                Bar(
+                    sign = "4/4",
+                    notes = listOf(
+                        Note(duration = 8, pitch = "G4"),
+                        Note(duration = 8, pitch = "A4")
+                    ),
+                    ),
+                Bar(
+                    sign = "4/4",
+                    notes = listOf(
+                        Note(duration = 8, pitch = "B4"),
+                        Note(duration = 8, pitch = "C5")
+                    ),
                 )
             )
         )
