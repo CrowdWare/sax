@@ -70,7 +70,8 @@ fun BarStaff(bar: Bar, startX: Float, modifier: Modifier = Modifier) {
     val staffHeight = 150f
     val staffLines = listOf(120f, 100f, 80f, 60f, 40f) // Die fünf Linien des Notensystems
     val rectHeight = 14f // Höhe der Rechtecke für Noten
-
+    val ledgerLineLength = 20f // Länge der Hilfslinie
+    
     // Gesamtdauer der Noten in der Bar
     val totalDuration = bar.notes.sumOf { it.duration }
 
@@ -93,6 +94,14 @@ fun BarStaff(bar: Bar, startX: Float, modifier: Modifier = Modifier) {
         bar.notes.forEach { note ->
             if (note.pitch != null) {
                 val y = calculateNoteY(note.pitch)
+                if (note.pitch == "C4") {
+                    drawLine(
+                        color = Color.Black,
+                        start = Offset(currentX - ledgerLineLength/2, y),
+                        end = Offset(currentX + note.duration * stepX - 10 + ledgerLineLength/2, y),
+                        strokeWidth = 2f
+                    )
+                }
                 drawRoundRect(
                     color = Color.Green,
                     topLeft = Offset(
