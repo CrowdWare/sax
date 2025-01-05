@@ -4,9 +4,10 @@ package at.crowdware.sax.ui
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
@@ -23,17 +24,18 @@ import at.crowdware.sax.utils.Song
 
 @Composable
 fun MusicStaff(song: Song) {
-    val barWidths = song.bars.map { calculateBarWidth(it) } // Berechne die Breiten der Bars
-
-    // Nutze eine LazyRow für horizontales Layout
-    LazyRow(modifier = Modifier.fillMaxWidth()) {
-        items(song.bars.size) { index ->
-            val bar = song.bars[index]
+    val barWidths = song.bars.map { calculateBarWidth(it) }
+    val scrollState = rememberScrollState()
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(scrollState)
+    ) {
+        song.bars.forEachIndexed { index, bar ->
             val barWidth = barWidths[index]
-
             BarStaff(
                 bar = bar,
-                startX = 10f, // Lokale X-Koordinaten (wird innerhalb von BarStaff geregelt)
+                startX = 10f,
                 modifier = Modifier.width(barWidth.dp)
             )
         }
@@ -104,7 +106,7 @@ fun BarStaff(bar: Bar, startX: Float, modifier: Modifier = Modifier) {
                         y = y - rectHeight / 2 // Zentriere das Rechteck auf der Y-Achse
                     ),
                     size = Size(
-                        width = note.duration * stepX -5, // Breite proportional zur Dauer
+                        width = note.duration * stepX - 10, // Breite proportional zur Dauer
                         height = rectHeight // Konstante Höhe des Rechtecks
                     ),
                     cornerRadius = CornerRadius(x = 5f, y = 5f) // Abgerundete Ecken

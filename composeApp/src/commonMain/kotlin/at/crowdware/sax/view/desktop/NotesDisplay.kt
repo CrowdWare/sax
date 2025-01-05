@@ -64,6 +64,18 @@ fun RowScope.notesDisplay() {
                     notes = listOf(
                         Note(duration = 16, pitch = "E5")
                     ),
+                ),
+                Bar(
+                    sign = "4/4",
+                    notes = listOf(
+                        Note(duration = 16, pitch = "E5")
+                    ),
+                ),
+                Bar(
+                    sign = "4/4",
+                    notes = listOf(
+                        Note(duration = 16, pitch = "E5")
+                    ),
                 )
             )
         )
