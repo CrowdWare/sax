@@ -121,14 +121,6 @@ fun BarStaff(bar: Bar, startX: Float, modifier: Modifier = Modifier) {
         }
     }
 }
-/*
-fun calculateBarWidth(bar: Bar): Float {
-    val noteWidth = 50f // Breite einer Note
-    val baseWidth = 60f // Basisbreite der Bar (für Balkenanfang und -ende)
-    val barContentWidth = bar.notes.sumOf { it.duration } * noteWidth / 8 // Achtel-Dauer skaliert
-    return baseWidth + barContentWidth
-}
-*/
 
 fun calculateBarWidth(bar: Bar): Float {
     val noteWidth = 80f  // Erhöht für bessere Sichtbarkeit

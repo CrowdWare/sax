@@ -226,7 +226,7 @@ fun RowScope.notesDisplay() {
     Box(
         modifier = Modifier
             .weight(1f)
-            .height(160.dp)
+            .height(160.dp).padding(8.dp,0.dp, 0.dp, 0.dp)
     ) {
         val scrollState = rememberScrollState()
         val coroutineScope = rememberCoroutineScope()
