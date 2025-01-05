@@ -143,7 +143,7 @@ fun NoteDurationSelector(
                             }
                         )
                         .height(25.dp)
-                        .background(if (isSelected) Color.Green else Color.Gray)
+                        .background(if (isSelected) Color(0xFF00EC4A) else Color.Gray)
                         .clickable {
                             selectedDuration = duration
                             onNoteDurationChange(selectedDuration)

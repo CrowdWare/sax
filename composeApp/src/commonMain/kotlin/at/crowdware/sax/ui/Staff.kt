@@ -122,7 +122,7 @@ fun BarStaff(bar: Bar, startX: Float, modifier: Modifier = Modifier) {
                     )
                 }
                 drawRoundRect(
-                    color = Color.Green,
+                    color = Color(0xFF00EC4A),
                     topLeft = Offset(
                         x = currentX,
                         y = y - rectHeight / 2 // Zentriere das Rechteck auf der Y-Achse
