@@ -68,46 +68,6 @@ fun calculateNoteY(note: String): Float {
     return baseY - (position * step) // Nach oben bewegen sich die Y-Werte nach unten
 }
 
-/*
-@Composable
-fun BarStaff(bar: Bar, startX: Float, modifier: Modifier = Modifier) {
-    val staffHeight = 150f
-    val staffLines = listOf(120f, 100f, 80f, 60f, 40f) // Die fünf Linien des Notensystems
-
-    // Gesamtdauer der Noten in der Bar
-    val totalDuration = bar.notes.sumOf { it.duration }
-
-    Canvas(modifier = modifier.height(staffHeight.dp)) {
-        // Zeichne die 5 Linien des Notensystems
-        staffLines.forEach { y ->
-            drawLine(
-                color = Color.Black,
-                start = Offset(0f, y),
-                end = Offset(size.width, y),
-                strokeWidth = 2f
-            )
-        }
-
-        // Berechne die horizontale Schrittweite pro Achtel
-        val stepX = size.width / totalDuration
-
-        // Zeichne die Noten
-        var currentX = startX
-        bar.notes.forEach { note ->
-            if (note.pitch != null) {
-                val y = calculateNoteY(note.pitch)
-                drawCircle(
-                    color = Color.Black,
-                    radius = 8f,
-                    center = Offset(currentX, y)
-                )
-            }
-
-            // Aktualisiere die X-Position basierend auf der Notendauer
-            currentX += note.duration * stepX
-        }
-    }
-}*/
 
 @Composable
 fun BarStaff(bar: Bar, startX: Float, modifier: Modifier = Modifier) {
@@ -158,8 +118,8 @@ fun BarStaff(bar: Bar, startX: Float, modifier: Modifier = Modifier) {
 }
 
 fun calculateBarWidth(bar: Bar): Float {
-    val noteWidth = 40f // Breite einer Note
-    val baseWidth = 50f // Basisbreite der Bar (für Balkenanfang und -ende)
+    val noteWidth = 50f // Breite einer Note
+    val baseWidth = 60f // Basisbreite der Bar (für Balkenanfang und -ende)
     val barContentWidth = bar.notes.sumOf { it.duration } * noteWidth / 8 // Achtel-Dauer skaliert
     return baseWidth + barContentWidth
 }

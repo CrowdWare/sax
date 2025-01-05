@@ -20,10 +20,14 @@ fun RowScope.notesDisplay() {
                 Bar(
                     sign = "4/4",
                     notes = listOf(
-                        Note(duration = 4, pitch = "C4"),
-                        Note(duration = 4, pitch = "D4"),
-                        Note(duration = 4, pitch = "E4"),
-                        Note(duration = 4, pitch = "F4")
+                        Note(duration = 2, pitch = "C4"),
+                        Note(duration = 2, pitch = "C4"),
+                        Note(duration = 2, pitch = "D4"),
+                        Note(duration = 2, pitch = "D4"),
+                        Note(duration = 2, pitch = "E4"),
+                        Note(duration = 2, pitch = "E4"),
+                        Note(duration = 2, pitch = "F4"),
+                        Note(duration = 2, pitch = "F4")
                     )
                 ),
                 Bar(
@@ -47,6 +51,18 @@ fun RowScope.notesDisplay() {
                     notes = listOf(
                         Note(duration = 8, pitch = "B4"),
                         Note(duration = 8, pitch = "C5")
+                    ),
+                ),
+                Bar(
+                    sign = "4/4",
+                    notes = listOf(
+                        Note(duration = 16, pitch = "D5")
+                    ),
+                ),
+                Bar(
+                    sign = "4/4",
+                    notes = listOf(
+                        Note(duration = 16, pitch = "E5")
                     ),
                 )
             )
