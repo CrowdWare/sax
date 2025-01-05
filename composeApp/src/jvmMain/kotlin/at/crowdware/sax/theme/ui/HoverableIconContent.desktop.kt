@@ -29,7 +29,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -55,7 +55,7 @@ actual fun HoverableIconContent(
     isSelected: Boolean,
     onHoverChange: (Boolean) -> Unit
 ) {
-    val lightenedBackgroundColor = LightenColor(MaterialTheme.colors.primary, 0.1f)
+    val lightenedBackgroundColor = LightenColor(MaterialTheme.colorScheme.primaryContainer, 0.1f)
 
     Box(modifier = Modifier
         .size(48.dp)
@@ -73,7 +73,7 @@ actual fun HoverableIconContent(
         Icon(
             painter = painter,
             contentDescription = "Hoverable Icon",
-            tint = if (isHovered || isSelected) MaterialTheme.colors.primary else MaterialTheme.colors.onPrimary,
+            tint = if (isHovered || isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.size(32.dp).align(Alignment.Center)
         )
         if (isHovered) {
@@ -98,7 +98,7 @@ actual fun HoverableIconContent(
                         BasicText(
                             text = tooltipText,
                             style = TextStyle(
-                                color = MaterialTheme.colors.onSurface,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 fontSize = 12.sp
                             )
                         )

@@ -42,7 +42,6 @@ fun HoverableIcon(
     HoverableIconContent(
         isHovered = isHovered,
         onClick = onClick,
-        //imageVector = imageVector,
         painter = painter,
         tooltipText = tooltipText,
         isSelected = isSelected,
