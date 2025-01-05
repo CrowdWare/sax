@@ -2,34 +2,28 @@ package at.crowdware.sax.ui
 
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import at.crowdware.sax.utils.Bar
-import at.crowdware.sax.utils.Note
 import at.crowdware.sax.utils.Song
 
 
-
 @Composable
-fun MusicStaff(song: Song) {
+fun MusicStaff(song: Song, modifier: Modifier = Modifier) {
     val barWidths = song.bars.map { calculateBarWidth(it) }
-    val scrollState = rememberScrollState()
+    val totalWidth = barWidths.sum()
+
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .horizontalScroll(scrollState)
+        modifier = modifier
     ) {
         song.bars.forEachIndexed { index, bar ->
             val barWidth = barWidths[index]
@@ -118,65 +112,18 @@ fun BarStaff(bar: Bar, startX: Float, modifier: Modifier = Modifier) {
         }
     }
 }
-
+/*
 fun calculateBarWidth(bar: Bar): Float {
     val noteWidth = 50f // Breite einer Note
     val baseWidth = 60f // Basisbreite der Bar (für Balkenanfang und -ende)
     val barContentWidth = bar.notes.sumOf { it.duration } * noteWidth / 8 // Achtel-Dauer skaliert
     return baseWidth + barContentWidth
 }
+*/
 
-fun DrawScope.drawNoteOnStaff(note: Note, lineSpacing: Float, positionX: Float) {
-    if (note.pitch == null) {
-        // Zeichne Pause
-        val pauseY = size.height / 2
-        drawLine(
-            color = Color.Black,
-            start = Offset(positionX - 5f, pauseY),
-            end = Offset(positionX + 5f, pauseY),
-            strokeWidth = 2f
-        )
-        return
-    }
-
-    val noteLine = noteToStaffLine(note.pitch)
-    val noteY = noteLine * lineSpacing
-    val noteRadius = 8f
-    drawCircle(
-        color = Color.Black,
-        radius = noteRadius,
-        center = Offset(positionX, noteY)
-    )
-
-    if (note.duration >= 4) {
-        drawLine(
-            color = Color.Black,
-            start = Offset(positionX + noteRadius, noteY),
-            end = Offset(positionX + noteRadius, noteY - 30f),
-            strokeWidth = 2f
-        )
-    }
-
-    if (note.isTied) {
-        drawArc(
-            color = Color.Black,
-            startAngle = 0f,
-            sweepAngle = 180f,
-            useCenter = false,
-            topLeft = Offset(positionX - 10f, noteY - 15f),
-            size = Size(20f, 10f),
-            style = Stroke(width = 2f)
-        )
-    }
-}
-
-
-// Bestimme, auf welcher Linie die Note gezeichnet werden soll (höhere Tonhöhe -> höher in der Liste)
-fun noteToStaffLine(pitch: String): Int {
-    val noteToLineMapping = mapOf(
-        "C3" to 1, "D3" to 1, "E3" to 1, "F3" to 2, "G3" to 2, "A3" to 2, "B3" to 3,
-        "C4" to 3, "D4" to 3, "E4" to 3, "F4" to 4, "G4" to 4, "A4" to 4, "B4" to 5,
-        "C5" to 5, "D5" to 5, "E5" to 5, "F5" to 6, "G5" to 6, "A5" to 6, "B5" to 7
-    )
-    return noteToLineMapping[pitch] ?: 3 // Default zu Mittel-C (C4) auf Linie 3
+fun calculateBarWidth(bar: Bar): Float {
+    val noteWidth = 80f  // Erhöht für bessere Sichtbarkeit
+    val baseWidth = 100f // Mehr Platz zwischen den Takten
+    val barContentWidth = bar.notes.sumOf { it.duration } * noteWidth / 8
+    return baseWidth + barContentWidth
 }

@@ -38,6 +38,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.7.3")
                 implementation("com.github.h0tk3y.betterParse:better-parse:0.4.4")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.3")
             }
             kotlin.srcDir(layout.buildDirectory.dir("generated/version"))
         }
