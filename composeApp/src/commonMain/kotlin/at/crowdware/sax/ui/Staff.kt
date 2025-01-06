@@ -110,8 +110,8 @@ fun BarStaff(bar: Bar, startX: Float, modifier: Modifier = Modifier) {
         // Draw bar line at the end
         drawLine(
             color = Color.Black,
-            start = Offset(size.width, 40f),  // Start from top staff line
-            end = Offset(size.width, 120f),   // End at bottom staff line
+            start = Offset(size.width + 4, 40f),  // Start from top staff line
+            end = Offset(size.width + 4, 120f),   // End at bottom staff line
             strokeWidth = 2f
         )
 
