@@ -53,7 +53,6 @@ fun RowScope.notesDisplay() {
         val exampleSong = Song(
             name = "Test Song",
             bars = listOf(
-                /*
                 Bar(
                     sign = "4/4",
                     notes = listOf(
@@ -89,7 +88,7 @@ fun RowScope.notesDisplay() {
                         Note(duration = 8, pitch = "B4"),
                         Note(duration = 8, pitch = "C5")
                     ),
-                ),*/
+                ),
                 Bar(
                     sign = "4/4",
                     notes = listOf(

@@ -20,10 +20,13 @@
 package at.crowdware.sax.ui
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
+import kotlin.math.roundToInt
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
@@ -36,11 +39,12 @@ import at.crowdware.sax.utils.Song
 
 @Composable
 fun MusicStaff(song: Song, modifier: Modifier = Modifier) {
-    val barWidths = song.bars.map { calculateBarWidth(it) }
-    val totalWidth = barWidths.sum()
+    val barWidths = song.bars.map { bar -> calculateBarWidth(bar) }
+    val totalWidth = barWidths.sum().roundToInt()
 
     Row(
         modifier = modifier
+            .horizontalScroll(rememberScrollState())
     ) {
         song.bars.forEachIndexed { index, bar ->
             val barWidth = barWidths[index]
