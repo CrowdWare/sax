@@ -129,9 +129,11 @@ fun RowScope.notesDisplay() {
                         }
                     }
             ) {
+                // Each bar needs at least 300dp width for better visibility, multiply by number of bars and add padding
+                val minWidth = (exampleSong.bars.size * 300 + 100).dp
                 MusicStaff(
                     song = exampleSong,
-                    modifier = Modifier.width(1200.dp)
+                    modifier = Modifier.width(minWidth)
                 )
             }
 

@@ -44,7 +44,6 @@ fun MusicStaff(song: Song, modifier: Modifier = Modifier) {
 
     Row(
         modifier = modifier
-            .horizontalScroll(rememberScrollState())
     ) {
         song.bars.forEachIndexed { index, bar ->
             val barWidth = barWidths[index]
@@ -160,7 +159,8 @@ fun BarStaff(bar: Bar, startX: Float, modifier: Modifier = Modifier, first: Bool
     }
 }
 
-fun calculateBarWidth(bar: Bar): Float {
+// Make the function accessible from other files
+internal fun calculateBarWidth(bar: Bar): Float {
     val noteWidth = 80f  // Erhöht für bessere Sichtbarkeit
     val baseWidth = 100f // Mehr Platz zwischen den Takten
     val barContentWidth = bar.notes.sumOf { it.duration } * noteWidth / 8
