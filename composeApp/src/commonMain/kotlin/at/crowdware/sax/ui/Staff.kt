@@ -21,7 +21,6 @@ package at.crowdware.sax.ui
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
@@ -48,7 +47,8 @@ fun MusicStaff(song: Song, modifier: Modifier = Modifier) {
             BarStaff(
                 bar = bar,
                 startX = 10f,
-                modifier = Modifier.width(barWidth.dp)
+                modifier = Modifier.width(barWidth.dp),
+                first = index == 0
             )
         }
     }
@@ -84,7 +84,7 @@ fun calculateNoteY(note: String): Float {
 
 
 @Composable
-fun BarStaff(bar: Bar, startX: Float, modifier: Modifier = Modifier) {
+fun BarStaff(bar: Bar, startX: Float, modifier: Modifier = Modifier, first: Boolean) {
     val staffHeight = 150f
     val staffLines = listOf(120f, 100f, 80f, 60f, 40f) // Die fünf Linien des Notensystems
     val rectHeight = 14f // Höhe der Rechtecke für Noten
@@ -99,14 +99,22 @@ fun BarStaff(bar: Bar, startX: Float, modifier: Modifier = Modifier) {
             drawLine(
                 color = Color.Black,
                 start = Offset(0f, y),
-                end = Offset(size.width, y),
+                end = Offset(size.width + 4, y),
                 strokeWidth = 2f
             )
         }
 
         // Berechne die horizontale Schrittweite pro Achtel
         val stepX = size.width / totalDuration
-
+        // Draw bar line at the begin
+        if(first) {
+            drawLine(
+                color = Color.Black,
+                start = Offset(0f, 40f),  // Start from top staff line
+                end = Offset(0f, 120f),   // End at bottom staff line
+                strokeWidth = 2f
+            )
+        }
         // Draw bar line at the end
         drawLine(
             color = Color.Black,
