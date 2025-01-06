@@ -19,7 +19,6 @@
 
 package at.crowdware.sax.ui
 
-
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -107,6 +106,14 @@ fun BarStaff(bar: Bar, startX: Float, modifier: Modifier = Modifier) {
 
         // Berechne die horizontale Schrittweite pro Achtel
         val stepX = size.width / totalDuration
+
+        // Draw bar line at the end
+        drawLine(
+            color = Color.Black,
+            start = Offset(size.width, 40f),  // Start from top staff line
+            end = Offset(size.width, 120f),   // End at bottom staff line
+            strokeWidth = 2f
+        )
 
         // Zeichne die Noten
         var currentX = startX
