@@ -78,7 +78,8 @@ fun calculateNoteY(note: String): Float {
         "E5" to 5,   // Zweite Lücke über B4
         "F5" to 6,   // Zweite Linie über B4
         "G5" to 7,   // Dritte Lücke über B4
-        "A5" to 8    // Dritte Linie über B4
+        "A5" to 8,    // Dritte Linie über B4
+        "B5" to 9
     )
 
     val position = notePositionMap[note] ?: error("Unknown note: $note")

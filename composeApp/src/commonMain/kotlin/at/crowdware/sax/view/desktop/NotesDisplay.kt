@@ -38,6 +38,7 @@ import at.crowdware.sax.utils.Bar
 import at.crowdware.sax.utils.Note
 import at.crowdware.sax.utils.Song
 import kotlinx.coroutines.launch
+import java.io.File
 
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -50,7 +51,10 @@ fun RowScope.notesDisplay() {
     ) {
         val scrollState = rememberScrollState()
         val coroutineScope = rememberCoroutineScope()
-        val exampleSong = Song(
+        val notes = readNotesFromFile("notes.txt")
+        val bars = createBarsFromNotes(notes)
+        val exampleSong = Song(name = "Loaded from File", bars = bars)
+        /*val exampleSong = Song(
             name = "Test Song",
             bars = listOf(
                 Bar(
@@ -114,7 +118,7 @@ fun RowScope.notesDisplay() {
                     ),
                 )
             )
-        )
+        )*/
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -143,4 +147,43 @@ fun RowScope.notesDisplay() {
             )
         }
     }
+}
+
+fun createBarsFromNotes(notes: List<Note>, notesPerBar: Int = 4): List<Bar> {
+    return notes.chunked(notesPerBar).map { notesInBar ->
+        Bar(sign = "4/4", notes = notesInBar)
+    }
+}
+
+fun readNotesFromFile(filePath: String): List<Note> {
+    val file = File(filePath)
+    if (!file.exists()) return emptyList()
+
+    return file.readLines()
+        .flatMap { line ->
+            line.split(",").mapNotNull { rawNote ->
+                if (rawNote.length > 1) {
+                    val durationSymbol = rawNote.first().toString()
+                    val pitch = rawNote.drop(1)
+
+                    val duration = when (durationSymbol) {
+                        "W" -> 4 // Ganze Note
+                        "H" -> 2 // Halbe Note
+                        "Q" -> 1 // Viertelnote
+                        "E" -> 1 // Achtelnote
+                        else -> null
+                    }
+
+                    if (duration != null && pitch.matches(Regex("[A-G][#b]?\\d"))) {
+                        Note(duration = duration, pitch = pitch)
+                    } else {
+                        println("Ungültige Note ignoriert: $rawNote")
+                        null
+                    }
+                } else {
+                    println("Ungültige Note ignoriert: $rawNote")
+                    null
+                }
+            }
+        }
 }

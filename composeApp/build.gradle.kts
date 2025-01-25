@@ -109,3 +109,7 @@ tasks.register("generateVersionFile") {
 tasks.named("build") {
     dependsOn("generateVersionFile")
 }
+
+tasks.named("compileKotlinJvm") {
+    dependsOn("generateVersionFile")
+}
