@@ -43,7 +43,7 @@ import java.io.File
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun RowScope.notesDisplay() {
+fun RowScope.notesDisplay(song: Song) {
     Box(
         modifier = Modifier
             .weight(1f)
@@ -51,9 +51,9 @@ fun RowScope.notesDisplay() {
     ) {
         val scrollState = rememberScrollState()
         val coroutineScope = rememberCoroutineScope()
-        val notes = readNotesFromFile("notes.txt")
-        val bars = createBarsFromNotes(notes)
-        val exampleSong = Song(name = "Loaded from File", bars = bars)
+        //val notes = readNotesFromFile("notes.txt")
+        //val bars = createBarsFromNotes(notes)
+        //val exampleSong = Song(name = "Loaded from File", bars = bars)
         /*val exampleSong = Song(
             name = "Test Song",
             bars = listOf(
@@ -134,9 +134,9 @@ fun RowScope.notesDisplay() {
                     }
             ) {
                 // Each bar needs at least 300dp width for better visibility, multiply by number of bars and add padding
-                val minWidth = (exampleSong.bars.size * 300 + 100).dp
+                val minWidth = (song.bars.size * 300 + 100).dp
                 MusicStaff(
-                    song = exampleSong,
+                    song = song,
                     modifier = Modifier.width(minWidth)
                 )
             }

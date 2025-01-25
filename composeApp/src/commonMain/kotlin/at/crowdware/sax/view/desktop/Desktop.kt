@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import at.crowdware.sax.model.NodeType
 import at.crowdware.sax.model.TreeNode
 import at.crowdware.sax.theme.LocalThemeIsDark
+import at.crowdware.sax.utils.Song
 
 @Composable
 fun fileTreeIconProvider(node: TreeNode) {
@@ -47,6 +48,10 @@ fun fileTreeIconProvider(node: TreeNode) {
 
 @Composable
 fun desktop() {
+    val filePath = "notes.txt"
+    val notes = readNotesFromFile(filePath)
+    val bars = createBarsFromNotes(notes)
+    val songState = remember { mutableStateOf(Song(name = "Loaded from File", bars = bars)) }
     Column(modifier = Modifier.fillMaxSize()) {
         Row (modifier = Modifier.weight(1F)){
             toolbar()
@@ -54,8 +59,10 @@ fun desktop() {
             playScreen()
         }
         Row (modifier = Modifier.background(color=MaterialTheme.colorScheme.primary).fillMaxWidth()){
-            notesDisplay()
-            keyboard()
+            notesDisplay(songState.value)
+            keyboard { updatedSong ->
+                songState.value = updatedSong
+            }
         }
     }
 }

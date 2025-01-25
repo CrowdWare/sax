@@ -39,6 +39,14 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import at.crowdware.sax.ui.PianoKeyboard
+import at.crowdware.sax.utils.Song
+
+import java.io.File
+
+fun appendNoteToFile(note: String, filePath: String = "notes.txt") {
+    val file = File(filePath)
+    file.appendText("$note,") // Schreibe die Note mit einem Komma getrennt
+}
 
 fun getLetterForDuration(duration: Int): String {
     return when(duration) {
@@ -54,7 +62,7 @@ fun getLetterForDuration(duration: Int): String {
 }
 
 @Composable
-fun RowScope.keyboard() {
+fun RowScope.keyboard(onSongUpdated: (Song) -> Unit) {
     var notes by remember { mutableStateOf(TextFieldValue("")) }
     var selectedNoteDuration by remember { mutableStateOf(2) }
 
@@ -83,13 +91,22 @@ fun RowScope.keyboard() {
 
         Column(modifier = Modifier.padding(8.dp).width(500.dp).fillMaxHeight()) {
             PianoKeyboard { note ->
-                val durationKuerzel = getLetterForDuration(selectedNoteDuration)
-                val noteWithDuration = "$durationKuerzel$note"
-                val cursorPosition = notes.selection.start
-                val newText =
-                    notes.text.substring(0, cursorPosition) + noteWithDuration + "," + notes.text.substring(cursorPosition)
-                notes = TextFieldValue(newText, TextRange(cursorPosition + noteWithDuration.length + 1))
+                val durationSymbol = getLetterForDuration(selectedNoteDuration)
+                val noteWithDuration = "$durationSymbol$note"
+
+                // Neue Note in die Datei schreiben
+                val file = File("notes.txt")
+                file.appendText("$noteWithDuration,")
+
+                // Song neu laden
+                val notes = readNotesFromFile("notes.txt")
+                val bars = createBarsFromNotes(notes)
+                val exampleSong = Song(name = "Loaded from File", bars = bars)
+
+                // Song aktualisieren
+                onSongUpdated(exampleSong)
             }
+
         }
     }
 }
