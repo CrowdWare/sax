@@ -80,6 +80,15 @@ fun RowScope.keyboard(onSongUpdated: (Song) -> Unit) {
                     val bars = createBarsFromNotes(notes)
                     val updatedSong = Song(name = "Loaded from File", bars = bars)
                     onSongUpdated(updatedSong)
+                },
+                onInsertRest = {
+                    appendRestToFile(selectedNoteDuration, "notes.txt")
+
+                    // Song neu laden und aktualisieren
+                    val notes = readNotesFromFile("notes.txt")
+                    val bars = createBarsFromNotes(notes)
+                    val updatedSong = Song(name = "Loaded from File", bars = bars)
+                    onSongUpdated(updatedSong)
                 }
             )
         }
@@ -101,7 +110,6 @@ fun RowScope.keyboard(onSongUpdated: (Song) -> Unit) {
         }
     }
 }
-
 /*
 @Composable
 fun RowScope.keyboard(onSongUpdated: (Song) -> Unit) {
@@ -109,11 +117,21 @@ fun RowScope.keyboard(onSongUpdated: (Song) -> Unit) {
     var selectedNoteDuration by remember { mutableStateOf(2) }
 
     Row(modifier = Modifier.height(160.dp).padding(4.dp)) {
-        // NoteDurationSelector links
         Column(modifier = Modifier.padding(8.dp).width(450.dp)) {
-            NoteDurationSelector(onNoteDurationChange = { newDuration ->
-                selectedNoteDuration = newDuration
-            })
+            NoteDurationSelector(
+                onNoteDurationChange = { newDuration ->
+                    selectedNoteDuration = newDuration
+                },
+                onUndoLastNote = {
+                    removeLastNoteFromFile("notes.txt")
+
+                    // Song neu laden und aktualisieren
+                    val notes = readNotesFromFile("notes.txt")
+                    val bars = createBarsFromNotes(notes)
+                    val updatedSong = Song(name = "Loaded from File", bars = bars)
+                    onSongUpdated(updatedSong)
+                }
+            )
         }
 
         Column(modifier = Modifier.padding(8.dp).width(500.dp).fillMaxHeight()) {
@@ -121,23 +139,100 @@ fun RowScope.keyboard(onSongUpdated: (Song) -> Unit) {
                 val durationSymbol = getLetterForDuration(selectedNoteDuration)
                 val noteWithDuration = "$durationSymbol$note"
 
-                // Neue Note in die Datei schreiben
                 val file = File("notes.txt")
                 file.appendText("$noteWithDuration,")
 
-                // Song neu laden
                 val notes = readNotesFromFile("notes.txt")
                 val bars = createBarsFromNotes(notes)
                 val exampleSong = Song(name = "Loaded from File", bars = bars)
 
-                // Song aktualisieren
                 onSongUpdated(exampleSong)
             }
-
         }
     }
 }
 */
+
+@Composable
+fun NoteDurationSelector(
+    onNoteDurationChange: (Int) -> Unit,
+    onUndoLastNote: () -> Unit,
+    onInsertRest: () -> Unit // Callback für Pause hinzufügen
+) {
+    val durationGroups = listOf(2, 3, 4, 6, 8, 12, 16)
+    var selectedDuration by remember { mutableStateOf(2) }
+
+    Column(
+        modifier = Modifier.padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Selected Duration: ${durationToText(selectedDuration)}",
+            style = TextStyle(color = MaterialTheme.colorScheme.onPrimary)
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+        ) {
+            durationGroups.forEach { duration ->
+                val isSelected = selectedDuration >= duration
+                Box(
+                    modifier = Modifier
+                        .width(
+                            when (duration) {
+                                2 -> 40.dp
+                                3, 4 -> 20.dp
+                                6, 8 -> 44.dp
+                                12, 16 -> 92.dp
+                                else -> 40.dp
+                            }
+                        )
+                        .height(25.dp)
+                        .background(if (isSelected) Color(0xFF00EC4A) else Color.Gray)
+                        .clickable {
+                            selectedDuration = duration
+                            onNoteDurationChange(selectedDuration)
+                        }
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        // Row für die Buttons, damit sie nebeneinander sind
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Back-Button
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(40.dp)
+                    .background(Color.Red)
+                    .clickable { onUndoLastNote() },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "Back", color = Color.White, fontSize = 16.sp)
+            }
+
+            // Pause-Button
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(40.dp)
+                    .background(Color.Blue)
+                    .clickable { onInsertRest() },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "Pause", color = Color.White, fontSize = 16.sp)
+            }
+        }
+    }
+}
+/*
 @Composable
 fun NoteDurationSelector(
     onNoteDurationChange: (Int) -> Unit,
@@ -198,66 +293,6 @@ fun NoteDurationSelector(
         }
     }
 }
-/*
-@Composable
-fun NoteDurationSelector(
-    onNoteDurationChange: (Int) -> Unit // Rückmeldung für die ausgewählte Notenlänge
-) {
-    val durationGroups = listOf(
-        2,  // Achtelnote
-        3,  // Punktierte Achtelnote
-        4,  // Viertelnote
-        6,  // Punktierte Viertelnote
-        8,  // Halbe Note
-        12, // Punktierte Halbe Note
-        16  // Ganze Note
-    )
-
-    var selectedDuration by remember { mutableStateOf(2) } // Standardmäßig Achtelnote ausgewählt
-
-    Column(
-        modifier = Modifier.padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Selected Duration: ${durationToText(selectedDuration)}",
-            style = TextStyle(color = MaterialTheme.colorScheme.onPrimary))
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        // Anzeige der Gruppen
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        ) {
-            durationGroups.forEach { duration ->
-                val isSelected = selectedDuration >= duration
-                Box(
-                    modifier = Modifier
-                        .width(
-                            when (duration) {
-                                2 -> 40.dp  // Achtelnote (2 Quadrate)
-                                3 -> 20.dp  // Punktierte Achtelnote (3 Quadrate)
-                                4 -> 20.dp  // Viertelnote (4 Quadrate)
-                                6 -> 44.dp  // Punktierte Viertelnote (6 Quadrate)
-                                8 -> 44.dp  // Halbe Note (8 Quadrate)
-                                12 -> 92.dp // Punktierte Halbe Note (12 Quadrate)
-                                16 -> 92.dp // Ganze Note (16 Quadrate)
-                                else -> 40.dp
-                            }
-                        )
-                        .height(25.dp)
-                        .background(if (isSelected) Color(0xFF00EC4A) else Color.Gray)
-                        .clickable {
-                            selectedDuration = duration
-                            onNoteDurationChange(selectedDuration)
-                        }
-                )
-            }
-        }
-    }
-}
 */
 fun durationToText(duration: Int): String {
     return when (duration) {
@@ -281,4 +316,10 @@ fun removeLastNoteFromFile(filePath: String = "notes.txt") {
         notes.removeLast()
         file.writeText(notes.joinToString(",") + ",") // Neue Notenliste speichern
     }
+}
+
+fun appendRestToFile(duration: Int, filePath: String = "notes.txt") {
+    val file = File(filePath)
+    val durationSymbol = getLetterForDuration(duration)
+    file.appendText("${durationSymbol}R,") // "R" steht für eine Pause
 }

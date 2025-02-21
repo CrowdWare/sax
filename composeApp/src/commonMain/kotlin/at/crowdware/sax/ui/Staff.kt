@@ -40,8 +40,6 @@ import at.crowdware.sax.utils.Song
 @Composable
 fun MusicStaff(song: Song, modifier: Modifier = Modifier) {
     val barWidths = song.bars.map { bar -> calculateBarWidth(bar) }
-    println("bar: $barWidths")
-    val totalWidth = barWidths.sum().roundToInt()
 
     Row(
         modifier = modifier
@@ -59,6 +57,9 @@ fun MusicStaff(song: Song, modifier: Modifier = Modifier) {
 }
 
 fun calculateNoteY(note: String): Float {
+    if (note == "R") {
+        return -99F // 🚀 Pausen haben keine Y-Koordinate
+    }
     val baseY = 100f // Basislinie für B4 (mittlere Linie)
     val step = 10f   // Abstand zwischen zwei Notenlinien oder Lücken
 
@@ -140,28 +141,30 @@ fun BarStaff(bar: Bar, startX: Float, modifier: Modifier = Modifier, first: Bool
         var currentX = startX
         bar.notes.forEach { note ->
             if (note.pitch != null) {
-                val y = calculateNoteY(note.pitch)
-                if (note.pitch == "C4") {
-                    drawLine(
-                        color = Color.Black,
-                        start = Offset(currentX - ledgerLineLength/2, y),
-                        end = Offset(currentX + note.duration * stepX - 10 + ledgerLineLength/2, y),
-                        strokeWidth = 2f
+                if (note.pitch != "R") {
+                    val y = calculateNoteY(note.pitch)
+                    if (note.pitch == "C4") {
+                        drawLine(
+                            color = Color.Black,
+                            start = Offset(currentX - ledgerLineLength/2, y),
+                            end = Offset(currentX + note.duration * stepX - 10 + ledgerLineLength/2, y),
+                            strokeWidth = 2f
+                        )
+                    }
+
+                    drawRoundRect(
+                        color = Color(0xFF00EC4A),
+                        topLeft = Offset(
+                            x = currentX,
+                            y = y - rectHeight / 2 // Zentriere das Rechteck auf der Y-Achse
+                        ),
+                        size = Size(
+                            width = note.duration * stepX - 10, // Breite proportional zur Dauer
+                            height = rectHeight // Konstante Höhe des Rechtecks
+                        ),
+                        cornerRadius = CornerRadius(x = 5f, y = 5f) // Abgerundete Ecken
                     )
                 }
-                println("Note: ${note.pitch},  duration: ${note.duration}")
-                drawRoundRect(
-                    color = Color(0xFF00EC4A),
-                    topLeft = Offset(
-                        x = currentX,
-                        y = y - rectHeight / 2 // Zentriere das Rechteck auf der Y-Achse
-                    ),
-                    size = Size(
-                        width = note.duration * stepX - 10, // Breite proportional zur Dauer
-                        height = rectHeight // Konstante Höhe des Rechtecks
-                    ),
-                    cornerRadius = CornerRadius(x = 5f, y = 5f) // Abgerundete Ecken
-                )
             }
 
             // Aktualisiere die X-Position basierend auf der Notendauer

@@ -81,31 +81,23 @@ fun RowScope.notesDisplay(song: Song) {
         }
     }
 }
-/*
-fun createBarsFromNotes(notes: List<Note>, notesPerBar: Int = 4): List<Bar> {
-    return notes.chunked(notesPerBar).map { notesInBar ->
-        Bar(sign = "4/4", notes = notesInBar)
-    }
-}*/
 
-fun createBarsFromNotes(notes: List<Note>, notesPerBar: Int = 4): List<Bar> {
+fun createBarsFromNotes(notes: List<Note>): List<Bar> {
     val bars = mutableListOf<Bar>()
     var currentBarNotes = mutableListOf<Note>()
     var currentBarDuration = 0
 
     for (note in notes) {
-        currentBarNotes.add(note)
+        currentBarNotes.add(note) // Pause wie eine Note behandeln
         currentBarDuration += note.duration
-
-        // Ein 4/4-Takt entspricht 8 "Einheiten" (z.B. Ganze Note = 8, Halbe = 4, Viertel = 2, Achtel = 1)
-        if (currentBarDuration >= 8) {
+        println("dur: ${note.duration}")
+        if (currentBarDuration >= 16) { // Ein 4/4-Takt besteht aus 8 Einheiten
             bars.add(Bar(sign = "4/4", notes = currentBarNotes.toList()))
             currentBarNotes.clear()
             currentBarDuration = 0
         }
     }
 
-    // Falls am Ende noch Noten übrig sind, einen letzten Takt hinzufügen
     if (currentBarNotes.isNotEmpty()) {
         bars.add(Bar(sign = "4/4", notes = currentBarNotes))
     }
@@ -113,35 +105,34 @@ fun createBarsFromNotes(notes: List<Note>, notesPerBar: Int = 4): List<Bar> {
     return bars
 }
 
-fun readNotesFromFile(filePath: String): List<Note> {
+fun readNotesFromFile(filePath: String = "notes.txt"): List<Note> {
     val file = File(filePath)
     if (!file.exists()) return emptyList()
 
-    return file.readLines()
-        .flatMap { line ->
-            line.split(",").mapNotNull { rawNote ->
-                if (rawNote.length > 1) {
-                    val durationSymbol = rawNote.first().toString()
-                    val pitch = rawNote.drop(1)
+    return file.readText()
+        .trimEnd(',')
+        .split(",")
+        .mapNotNull { entry ->
+            if (entry.isEmpty()) return@mapNotNull null
 
-                    val duration = when (durationSymbol) {
-                        "W" -> 8 // Ganze Note
-                        "H" -> 4 // Halbe Note
-                        "Q" -> 2 // Viertelnote
-                        "E" -> 1 // Achtelnote
-                        else -> null
-                    }
+            val durationSymbol = entry.first() // Erster Buchstabe gibt die Dauer an
+            val noteName = entry.drop(1) // Rest des Strings ist der Notenname oder "R"
 
-                    if (duration != null && pitch.matches(Regex("[A-G][#b]?\\d"))) {
-                        Note(duration = duration, pitch = pitch)
-                    } else {
-                        println("Ungültige Note ignoriert: $rawNote")
-                        null
-                    }
-                } else {
-                    println("Ungültige Note ignoriert: $rawNote")
-                    null
-                }
+            val duration = when (durationSymbol) {
+                'E' -> 2  // Achtelnote
+                'e' -> 3  // Punktierte Achtelnote
+                'Q' -> 4  // Viertelnote
+                'q' -> 6  // Punktierte Viertelnote
+                'H' -> 8  // Halbe Note
+                'h' -> 12 // Punktierte Halbe Note
+                'W' -> 16 // Ganze Note
+                else -> null
+            }
+
+            if (duration != null) {
+                Note(pitch = noteName, duration = duration) // Normale Note speichern
+            } else {
+                null // Ungültige Einträge ignorieren
             }
         }
 }
