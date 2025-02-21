@@ -81,11 +81,36 @@ fun RowScope.notesDisplay(song: Song) {
         }
     }
 }
-
+/*
 fun createBarsFromNotes(notes: List<Note>, notesPerBar: Int = 4): List<Bar> {
     return notes.chunked(notesPerBar).map { notesInBar ->
         Bar(sign = "4/4", notes = notesInBar)
     }
+}*/
+
+fun createBarsFromNotes(notes: List<Note>, notesPerBar: Int = 4): List<Bar> {
+    val bars = mutableListOf<Bar>()
+    var currentBarNotes = mutableListOf<Note>()
+    var currentBarDuration = 0
+
+    for (note in notes) {
+        currentBarNotes.add(note)
+        currentBarDuration += note.duration
+
+        // Ein 4/4-Takt entspricht 8 "Einheiten" (z.B. Ganze Note = 8, Halbe = 4, Viertel = 2, Achtel = 1)
+        if (currentBarDuration >= 8) {
+            bars.add(Bar(sign = "4/4", notes = currentBarNotes.toList()))
+            currentBarNotes.clear()
+            currentBarDuration = 0
+        }
+    }
+
+    // Falls am Ende noch Noten übrig sind, einen letzten Takt hinzufügen
+    if (currentBarNotes.isNotEmpty()) {
+        bars.add(Bar(sign = "4/4", notes = currentBarNotes))
+    }
+
+    return bars
 }
 
 fun readNotesFromFile(filePath: String): List<Note> {
