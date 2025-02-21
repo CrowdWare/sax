@@ -19,28 +19,23 @@
 
 package at.crowdware.sax.view.desktop
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import at.crowdware.sax.ui.PianoKeyboard
 import at.crowdware.sax.utils.Song
-
 import java.io.File
 
 fun appendNoteToFile(note: String, filePath: String = "notes.txt") {
@@ -61,12 +56,53 @@ fun getLetterForDuration(duration: Int): String {
     }
 }
 
+
+
+@Composable
+fun NoteStaffWithNotes(pitches: List<String>) {
+    val notePositions = mapOf(
+        "C4" to 71f, "D4" to 66f, "E4" to 61f, "F4" to 56f,
+        "G4" to 51f, "A4" to 46f, "B4" to 41f, "C5" to 36f,
+        "D5" to 31F, "E5" to 26F, "F5" to 21F, "G5" to 16F,
+        "A5" to 11F, "B5" to 6F
+    )
+
+    Box(modifier = Modifier.fillMaxWidth().height(120.dp)) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val staffTop = 20f
+            val lineSpacing = 10f
+
+            // 🎼 5 Notenlinien zeichnen
+            for (i in 0..4) {
+                drawLine(
+                    color = Color.Black,
+                    start = Offset(0f, staffTop + i * lineSpacing),
+                    end = Offset(size.width, staffTop + i * lineSpacing),
+                    strokeWidth = 2f
+                )
+            }
+
+            // 🎵 Noten für jede Taste darstellen
+            val keySpacing = size.width / pitches.size
+            pitches.forEachIndexed { index, pitch ->
+                notePositions[pitch]?.let { yPosition ->
+                    drawCircle(
+                        color = Color(0xFF00EC4A),
+                        radius = 5f,
+                        center = Offset(index * keySpacing + keySpacing / 2, yPosition)
+                    )
+                }
+            }
+        }
+    }
+}
+
 @Composable
 fun RowScope.keyboard(onSongUpdated: (Song) -> Unit) {
     var notes by remember { mutableStateOf(TextFieldValue("")) }
     var selectedNoteDuration by remember { mutableStateOf(2) }
 
-    Row(modifier = Modifier.height(160.dp).padding(4.dp)) {
+    Row(modifier = Modifier.height(190.dp).padding(4.dp)) {
         Column(modifier = Modifier.padding(8.dp).width(450.dp)) {
             NoteDurationSelector(
                 onNoteDurationChange = { newDuration ->
@@ -94,64 +130,37 @@ fun RowScope.keyboard(onSongUpdated: (Song) -> Unit) {
         }
 
         Column(modifier = Modifier.padding(8.dp).width(500.dp).fillMaxHeight()) {
-            PianoKeyboard { note ->
-                val durationSymbol = getLetterForDuration(selectedNoteDuration)
-                val noteWithDuration = "$durationSymbol$note"
-
-                val file = File("notes.txt")
-                file.appendText("$noteWithDuration,")
-
-                val notes = readNotesFromFile("notes.txt")
-                val bars = createBarsFromNotes(notes)
-                val exampleSong = Song(name = "Loaded from File", bars = bars)
-
-                onSongUpdated(exampleSong)
+            val pianoKeys = listOf("C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5")
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(90.dp) // ⬅️ Weniger Höhe für das Notensystem
+            ) {
+                NoteStaffWithNotes(pianoKeys)
             }
-        }
-    }
-}
-/*
-@Composable
-fun RowScope.keyboard(onSongUpdated: (Song) -> Unit) {
-    var notes by remember { mutableStateOf(TextFieldValue("")) }
-    var selectedNoteDuration by remember { mutableStateOf(2) }
 
-    Row(modifier = Modifier.height(160.dp).padding(4.dp)) {
-        Column(modifier = Modifier.padding(8.dp).width(450.dp)) {
-            NoteDurationSelector(
-                onNoteDurationChange = { newDuration ->
-                    selectedNoteDuration = newDuration
-                },
-                onUndoLastNote = {
-                    removeLastNoteFromFile("notes.txt")
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1F) // ⬅️ Sorgt dafür, dass das Klavier sich anpasst
+            ) {
+                PianoKeyboard { note ->
+                    val durationSymbol = getLetterForDuration(selectedNoteDuration)
+                    val noteWithDuration = "$durationSymbol$note"
 
-                    // Song neu laden und aktualisieren
+                    val file = File("notes.txt")
+                    file.appendText("$noteWithDuration,")
+
                     val notes = readNotesFromFile("notes.txt")
                     val bars = createBarsFromNotes(notes)
-                    val updatedSong = Song(name = "Loaded from File", bars = bars)
-                    onSongUpdated(updatedSong)
+                    val exampleSong = Song(name = "Loaded from File", bars = bars)
+
+                    onSongUpdated(exampleSong)
                 }
-            )
-        }
-
-        Column(modifier = Modifier.padding(8.dp).width(500.dp).fillMaxHeight()) {
-            PianoKeyboard { note ->
-                val durationSymbol = getLetterForDuration(selectedNoteDuration)
-                val noteWithDuration = "$durationSymbol$note"
-
-                val file = File("notes.txt")
-                file.appendText("$noteWithDuration,")
-
-                val notes = readNotesFromFile("notes.txt")
-                val bars = createBarsFromNotes(notes)
-                val exampleSong = Song(name = "Loaded from File", bars = bars)
-
-                onSongUpdated(exampleSong)
             }
         }
     }
 }
-*/
 
 @Composable
 fun NoteDurationSelector(
@@ -232,68 +241,7 @@ fun NoteDurationSelector(
         }
     }
 }
-/*
-@Composable
-fun NoteDurationSelector(
-    onNoteDurationChange: (Int) -> Unit,
-    onUndoLastNote: () -> Unit // Callback für Rückgängig-Aktion
-) {
-    val durationGroups = listOf(2, 3, 4, 6, 8, 12, 16)
-    var selectedDuration by remember { mutableStateOf(2) }
 
-    Column(
-        modifier = Modifier.padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Selected Duration: ${durationToText(selectedDuration)}",
-            style = TextStyle(color = MaterialTheme.colorScheme.onPrimary)
-        )
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-        ) {
-            durationGroups.forEach { duration ->
-                val isSelected = selectedDuration >= duration
-                Box(
-                    modifier = Modifier
-                        .width(
-                            when (duration) {
-                                2 -> 40.dp
-                                3, 4 -> 20.dp
-                                6, 8 -> 44.dp
-                                12, 16 -> 92.dp
-                                else -> 40.dp
-                            }
-                        )
-                        .height(25.dp)
-                        .background(if (isSelected) Color(0xFF00EC4A) else Color.Gray)
-                        .clickable {
-                            selectedDuration = duration
-                            onNoteDurationChange(selectedDuration)
-                        }
-                )
-            }
-        }
-
-        // Rückgängig-Button hinzufügen
-        Spacer(modifier = Modifier.height(12.dp))
-        Box(
-            modifier = Modifier
-                .width(120.dp)
-                .height(40.dp)
-                .background(Color.Red)
-                .clickable { onUndoLastNote() },
-            contentAlignment = Alignment.Center
-        ) {
-            Text(text = "Back", color = Color.White, fontSize = 16.sp)
-        }
-    }
-}
-*/
 fun durationToText(duration: Int): String {
     return when (duration) {
         2 -> "Eighth note"          // Achtelnote

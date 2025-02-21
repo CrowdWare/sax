@@ -128,7 +128,7 @@ fun PianoKeyboard(onNoteClick: (String) -> Unit) {
             )
             // Draw note text
             val note = whiteNotes[i][0].toString()
-            drawNoteText(note, i * whiteKeyWidth + whiteKeyWidth / 2 - 7, size.height - 10)
+            drawNoteText(note, i * whiteKeyWidth + whiteKeyWidth / 2 - 7, size.height - 8)
             i++
         }
 
