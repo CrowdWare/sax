@@ -51,74 +51,7 @@ fun RowScope.notesDisplay(song: Song) {
     ) {
         val scrollState = rememberScrollState()
         val coroutineScope = rememberCoroutineScope()
-        //val notes = readNotesFromFile("notes.txt")
-        //val bars = createBarsFromNotes(notes)
-        //val exampleSong = Song(name = "Loaded from File", bars = bars)
-        /*val exampleSong = Song(
-            name = "Test Song",
-            bars = listOf(
-                Bar(
-                    sign = "4/4",
-                    notes = listOf(
-                        Note(duration = 2, pitch = "C4"),
-                        Note(duration = 2, pitch = "C4"),
-                        Note(duration = 2, pitch = "D4"),
-                        Note(duration = 2, pitch = "D4"),
-                        Note(duration = 2, pitch = "E4"),
-                        Note(duration = 2, pitch = "E4"),
-                        Note(duration = 2, pitch = "F4"),
-                        Note(duration = 2, pitch = "F4")
-                    )
-                ),
-                Bar(
-                    sign = "4/4",
-                    notes = listOf(
-                        Note(duration = 4, pitch = "G4"),
-                        Note(duration = 4, pitch = "A4"),
-                        Note(duration = 4, pitch = "B4"),
-                        Note(duration = 4, pitch = "C5")
-                    )
-                ),
-                Bar(
-                    sign = "4/4",
-                    notes = listOf(
-                        Note(duration = 8, pitch = "G4"),
-                        Note(duration = 8, pitch = "A4")
-                    ),
-                ),
-                Bar(
-                    sign = "4/4",
-                    notes = listOf(
-                        Note(duration = 8, pitch = "B4"),
-                        Note(duration = 8, pitch = "C5")
-                    ),
-                ),
-                Bar(
-                    sign = "4/4",
-                    notes = listOf(
-                        Note(duration = 16, pitch = "D5")
-                    ),
-                ),
-                Bar(
-                    sign = "4/4",
-                    notes = listOf(
-                        Note(duration = 16, pitch = "E5")
-                    ),
-                ),
-                Bar(
-                    sign = "4/4",
-                    notes = listOf(
-                        Note(duration = 16, pitch = "E5")
-                    ),
-                ),
-                Bar(
-                    sign = "4/4",
-                    notes = listOf(
-                        Note(duration = 16, pitch = "E5")
-                    ),
-                )
-            )
-        )*/
+
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -167,9 +100,9 @@ fun readNotesFromFile(filePath: String): List<Note> {
                     val pitch = rawNote.drop(1)
 
                     val duration = when (durationSymbol) {
-                        "W" -> 4 // Ganze Note
-                        "H" -> 2 // Halbe Note
-                        "Q" -> 1 // Viertelnote
+                        "W" -> 8 // Ganze Note
+                        "H" -> 4 // Halbe Note
+                        "Q" -> 2 // Viertelnote
                         "E" -> 1 // Achtelnote
                         else -> null
                     }

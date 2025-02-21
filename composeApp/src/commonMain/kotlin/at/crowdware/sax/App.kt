@@ -28,14 +28,14 @@ import at.crowdware.sax.view.desktop.desktop
 @Composable
 internal fun App() {
     AppTheme {
-        val input = "EQ4,EC#5-ED5,EDb5,EC5,QC5,HP,hP,WH,EC3,qB4-QB4,HC4"
+        /*val input = "EQ4,EC#5-ED5,EDb5,EC5,QC5,HP,hP,WH,EC3,qB4-QB4,HC4"
         val bars = parseBars(input)
         bars.forEach { bar ->
             println("Bar: ${bar.sign}")
             bar.notes.forEach { note ->
                 println("  Note: ${note.pitch}, Duration: ${note.duration}, Tied: ${note.isTied}")
             }
-        }
+        }*/
         desktop()
     }
 }

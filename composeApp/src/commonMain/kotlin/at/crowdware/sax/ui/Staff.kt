@@ -62,7 +62,7 @@ fun calculateNoteY(note: String): Float {
     val step = 10f   // Abstand zwischen zwei Notenlinien oder Lücken
 
     // Mapping der Noten zu relativen Positionen
-    val notePositionMap = mapOf(
+    /*val notePositionMap = mapOf(
         // Unterhalb der Basislinie (B4)
         "A4" to 1,  // Erste Lücke unter B4
         "G4" to 0,  // Zweite Linie unter B4
@@ -80,10 +80,38 @@ fun calculateNoteY(note: String): Float {
         "G5" to 7,   // Dritte Lücke über B4
         "A5" to 8,    // Dritte Linie über B4
         "B5" to 9
+    )*/
+    val notePositionMap = mapOf(
+        // Unterhalb der Notenlinie
+        "C3" to -11, "C#3" to -10.5f, "Db3" to -10.5f,
+        "D3" to -10, "D#3" to -9.5f, "Eb3" to -9.5f,
+        "E3" to -9,
+        "F3" to -8, "F#3" to -7.5f, "Gb3" to -7.5f,
+        "G3" to -7, "G#3" to -6.5f, "Ab3" to -6.5f,
+        "A3" to -6, "A#3" to -5.5f, "Bb3" to -5.5f,
+        "B3" to -5,
+
+        // Notenlinie ab C4
+        "C4" to -4, "C#4" to -3.5f, "Db4" to -3.5f,
+        "D4" to -3, "D#4" to -2.5f, "Eb4" to -2.5f,
+        "E4" to -2,
+        "F4" to -1, "F#4" to -0.5f, "Gb4" to -0.5f,
+        "G4" to 0, "G#4" to 0.5f, "Ab4" to 0.5f,
+        "A4" to 1, "A#4" to 1.5f, "Bb4" to 1.5f,
+        "B4" to 2,
+
+        // Über B4
+        "C5" to 3, "C#5" to 3.5f, "Db5" to 3.5f,
+        "D5" to 4, "D#5" to 4.5f, "Eb5" to 4.5f,
+        "E5" to 5,
+        "F5" to 6, "F#5" to 6.5f, "Gb5" to 6.5f,
+        "G5" to 7, "G#5" to 7.5f, "Ab5" to 7.5f,
+        "A5" to 8, "A#5" to 8.5f, "Bb5" to 8.5f,
+        "B5" to 9
     )
 
     val position = notePositionMap[note] ?: error("Unknown note: $note")
-    return baseY - (position * step) // Nach oben bewegen sich die Y-Werte nach unten
+    return baseY - (position.toFloat() * step) // Nach oben bewegen sich die Y-Werte nach unten
 }
 
 
@@ -140,6 +168,7 @@ fun BarStaff(bar: Bar, startX: Float, modifier: Modifier = Modifier, first: Bool
                         strokeWidth = 2f
                     )
                 }
+                println("Note: ${note.pitch},  duration: ${note.duration}")
                 drawRoundRect(
                     color = Color(0xFF00EC4A),
                     topLeft = Offset(

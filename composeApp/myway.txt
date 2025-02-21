@@ -1,0 +1,11 @@
+EG4,EE5,ED5,HE5,EG4,EE5,ED5,HE5,ED5,EE5,ED5,HD5,HC#5,EA4,HF5,EA4,EG5,EE5,HF5,EA4,EF5,EE5,HF5,EE5,EG5,ED5,QF5,HE5,EC5,HG5,EF#5,EG5,EF#5,HG5,EF5,EG5,EA5,HG5,EF5,EF5,
+EE5,QG5,HF5,EG5,HE5,EG5,EF5,EE5,HD5,EB5,EC5,ED5,WD5,HC5,
+
+
+     xxxxxxxxxxxxxxxx          xxxx xxxx xxxxxxxxxxxxxxxx         xxxx xxxx xxxxxxxxxxxxxxxx xxxx xxxx xxxx xxxxxxxx                  xxxxxxxxxxxxxxxx         xxxx
+**** ****************     **** **** **** ****************    **** **** **** **************** **** **** **** ******** ________    **** ****************    **** ****
+**** ****************     **** **** **** ****************    **** **** **** **************** **** **** **** ********             **** ****************    **** ****
+**** ****************     **** **** **** ****************    **** **** **** **************** **** **** **** ********                  ****************         ****
+     oooooooooooooooo          oooo oooo oooooooooooooooo         oooo oooo oooooooooooooooo oooo oooo oooo oooooooo                  oooooooooooooooo         oooo
+     oooooooooooooooo          oooo oooo oooooooooooooooo         oooo oooo oooooooooooooooo oooo oooo oooo oooooooo
+                                    oooo                               oooo                  oooo      oooo oooooooo

@@ -72,21 +72,8 @@ fun RowScope.keyboard(onSongUpdated: (Song) -> Unit) {
             NoteDurationSelector(onNoteDurationChange = { newDuration ->
                 selectedNoteDuration = newDuration
             })
-            Spacer(modifier = Modifier.height(4.dp))
-            Column(modifier = Modifier.background(color=MaterialTheme.colorScheme.background).padding(4.dp)) {
-                BasicTextField(
-                    value = notes,
-                    onValueChange = { notes = it },
-                    modifier = Modifier.fillMaxWidth().background(Color.Transparent),
-                    singleLine = true,
-                    textStyle = TextStyle(
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onBackground
-                    ),
-                    cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
-                )
-            }
+
+
         }
 
         Column(modifier = Modifier.padding(8.dp).width(500.dp).fillMaxHeight()) {
