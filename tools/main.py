@@ -1,75 +1,202 @@
 import mido
-import matplotlib.pyplot as plt
-
-from mido import Message, MidiFile, MidiTrack
-
-def create_hallelujah_midi(filename="hallelujah.mid"):
-    # MIDI-Datei und Track erstellen
-    midi = MidiFile()
-    track = MidiTrack()
-    midi.tracks.append(track)
-
-    # Instrument setzen (Altsaxophon, General MIDI Program 65)
-    track.append(Message('program_change', program=65, time=0))
-
-    # "Hallelujah" Melodie (vereinfachte Version in C-Dur)
-    # (Note, Duration in ticks)
-    melody = [
-        (67, 480), (67, 480), (69, 480), (67, 480), (64, 960), (65, 960),  # "Now I've heard there was a secret chord"
-        (67, 480), (67, 480), (69, 480), (67, 480), (72, 960), (71, 960),  # "That David played, and it pleased the Lord"
-        (67, 480), (67, 480), (69, 480), (67, 480), (64, 960), (65, 960),  # "But you don't really care for music, do you?"
-        (67, 480), (67, 480), (69, 480), (67, 480), (72, 960), (71, 960),  # "It goes like this, the fourth, the fifth"
-        (72, 480), (71, 480), (69, 480), (67, 480), (64, 960), (64, 960),  # "The minor falls, the major lifts"
-        (67, 480), (67, 480), (69, 480), (67, 480), (64, 960), (65, 960),  # "The baffled king composing Hallelujah"
-    ]
-
-    # Melodie in den Track einfügen
-    for note, duration in melody:
-        track.append(Message('note_on', note=note, velocity=64, time=0))
-        track.append(Message('note_off', note=note, velocity=64, time=duration))
-
-    # MIDI-Datei speichern
-    midi.save(filename)
-    print(f"MIDI file '{filename}' created successfully.")
+from fpdf import FPDF
 
 
-def midi_to_bars(midi_file, output_file="output.png"):
-    # MIDI-Datei einlesen
-    midi = mido.MidiFile(midi_file)
-    notes = []
+def ascii_to_pdf(input_ascii_file, output_pdf_file, notes_per_row=23):
+    with open(input_ascii_file, 'r') as f:
+        lines = [line.rstrip('\n') for line in f]
+
+    pdf = FPDF(orientation='L', format='A4')
+    pdf.add_page()
+    pdf.set_font('Courier', size=9)
+
+    # Splitte alle Zeilen anhand des Trennzeichens "|"
+    split_lines = [line.split('|')[:-1] for line in lines]
+    total_notes = len(split_lines[0])
+
+    start_note = 0
+    while start_note < total_notes:
+        end_note = min(start_note + notes_per_row, total_notes)
+
+        for line in lines:
+            notes = line.split('|')[start_note:end_note]
+            segment = ' '.join(notes)
+            pdf.cell(0, 4, segment, ln=True)
+        pdf.ln(4)
+        start_note = end_note
+
+    pdf.output(output_pdf_file)
+
+"""
+def ascii_to_pdf(input_ascii_file, output_pdf_file, notes_per_row=14):
+    with open(input_ascii_file, 'r') as f:
+        lines = [line.rstrip('\n') for line in f]
+
+    pdf = FPDF(orientation='L', format='A4')
+    pdf.add_page()
+    pdf.set_font('Courier', size=10)
+
+    max_line_length = max(len(line) for line in lines)
+    start_col = 0
+    chars_per_note = max(len(note) for line in lines for note in line.split()) + 1
+    notes_per_page = notes_per_row * chars_per_note
+
+    while start_col < max(len(line) for line in lines):
+        end_col = start_col + notes_per_page
+        for line in lines:
+            segment = line[start_col:end_col].rstrip()
+            pdf.cell(0, 5, segment, ln=True)
+        pdf.ln(4)  # kleiner Abstand zwischen Notengruppen
+        start_col = end_col
+
+    pdf.output(output_pdf_file)
+     
+
+
+def ascii_to_pdf(input_ascii_file, output_pdf_file, notes_per_row=8):
+    with open(input_ascii_file, 'r') as f:
+        lines = [line.rstrip('\n') for line in f]
+
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Courier", size=10)
+
+    # Ermittlung der Anzahl der Noten
+    notes_total = len(lines[0])
+    notes_processed = 0
+
+    while notes_processed < notes_total:
+        segment_end = notes_processed + notes_per_row * 17  # 16 Zeichen + 1 Leerzeichen pro Note (geschätzt)
+        segment_end = min(segment_end, notes_total)
+
+        for line in lines:
+            segment = line[notes_processed:segment_end]
+            pdf.cell(0, 5, segment, ln=True)
+
+        pdf.ln(5)  # Leerzeile nach jeder Gruppe
+        notes_processed = segment_end
+
+    pdf.output(output_pdf_file)
+ """
     
-    current_time = 0
-    for msg in midi:
-        current_time += msg.time
-        if msg.type == 'note_on' and msg.velocity > 0:
-            notes.append({
-                'note': msg.note,
-                'start': current_time,
-                'duration': msg.time if msg.type == 'note_off' else 0.1
-            })
-    
-    # Noten in Balkendiagramm-Daten umwandeln
-    y_labels = sorted(set(note['note'] for note in notes))
-    y_map = {note: idx for idx, note in enumerate(y_labels)}
-    
-    fig, ax = plt.subplots(figsize=(8.3, 11.7))  # A4-Größe in Zoll: 8.3 x 11.7
-    for note in notes:
-        ax.broken_barh([(note['start'], note['duration'])], (y_map[note['note']], 1), facecolors='blue')
-    
-    # Achsen und Layout anpassen
-    ax.set_yticks(range(len(y_labels)))
-    ax.set_yticklabels([f"Note {note}" for note in y_labels])
-    ax.set_xlabel('Time (seconds)')
-    ax.set_ylabel('Notes')
-    ax.set_title('MIDI Notes Visualized')
-    ax.grid(True)
-    
-    # Diagramm speichern
-    plt.tight_layout()
-    plt.savefig(output_file)
-    print(f"Diagram saved to {output_file}")
+# Dauer in MIDI-Ticks und zugehörige Anzahl von Zeichen
+durationMap = {
+    120: 1,    # Sechzehntel
+    240: 2,    # Achtel
+    480: 4,    # Viertel
+    960: 8,    # Halbe
+    1920: 16   # Ganze Note
+}
 
-# Beispielaufruf
-# Beispielaufruf
-create_hallelujah_midi("hallelujah.mid")
-midi_to_bars("hallelujah.mid")
+# MIDI-Notenwerte zu Notennamen
+def midi_note_to_name(note):
+    notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+    return notes[note % 12] + str((note // 12) - 1)
+
+# Nächstgelegenen Wert aus der durationMap finden
+def nearest_duration(ticks):
+    return min(durationMap.keys(), key=lambda x: abs(x - ticks))
+
+# Saxophon-Fingertabelle mit vertikaler Klappenstellung
+sax_fingerings = {
+    'C4':  [' ', 'X', 'X', 'X', 'O', 'O', 'O', 'U'],
+    'D4':  [' ', 'X', 'X', 'X', 'O', 'O', 'O', ' '],
+    'D#4': [' ', 'X', 'X', 'X', 'O', 'O', 'O', '^'],
+    'E4':  [' ', 'X', 'X', 'X', 'O', 'O', ' ', ' '],
+    'F4':  [' ', 'X', 'X', 'X', 'O', ' ', ' ', ' '],
+    'G4':  [' ', 'X', 'X', 'X', ' ', ' ', ' ', ' '],
+    'A4':  [' ', 'X', 'X', ' ', ' ', ' ', ' ', ' '],
+    'B4':  [' ', 'X', ' ', ' ', ' ', ' ', ' ', ' '],
+    'C5':  [' ', ' ', 'X', ' ', ' ', ' ', ' ', ' '],
+    'D5':  ['^', 'X', 'X', 'X', 'O', 'O', 'O', ' '],
+    'D#5': ['^', 'X', 'X', 'X', 'O', 'O', 'O', '^'],
+    'E5':  ['^', 'X', 'X', 'X', 'O', 'O', ' ', ' '],
+    'F5':  ['^', 'X', 'X', 'X', 'O', ' ', ' ', ' '],
+    'G5':  ['^', 'X', 'X', 'X', ' ', ' ', ' ', ' '],
+    'A5':  ['^', 'X', 'X', ' ', ' ', ' ', ' ', ' '],
+    'B5':  ['^', 'X', ' ', ' ', ' ', ' ', ' ', ' '],
+    'C5':  ['^', ' ', 'X', ' ', ' ', ' ', ' ', ' '],
+}
+
+"""
+# MIDI verarbeiten und ASCII umwandeln (ohne Zeilenumbruch zwischen Tönen)
+def midi_to_ascii(input_file, output_file):
+    midi = mido.MidiFile(input_file)
+
+    with open(output_file, 'w') as f:
+        vertical_lines = ['' for _ in range(8)]
+
+        for track in midi.tracks:
+            elapsed_ticks = 0
+            current_notes = {}
+
+            for msg in track:
+                elapsed_ticks += msg.time
+
+                if msg.type == 'note_on' and msg.velocity > 0:
+                    current_notes[msg.note] = elapsed_ticks
+                    elapsed_ticks = 0
+
+                elif (msg.type == 'note_off' or (msg.type == 'note_on' and msg.velocity == 0)) and msg.note in current_notes:
+                    duration_ticks = elapsed_ticks
+                    duration_length = nearest_duration(duration_ticks)
+                    note_name = midi_note_to_name(msg.note)
+                    fingering = sax_fingerings.get(note_name, [' ']*7)
+                    chars = 'X' * durationMap[duration_length]
+
+                    for i, key in enumerate(fingering):
+                        if key == 'X':
+                            vertical_lines[i] += chars + ' '
+                        elif key in ('O', '^', 'U'):
+                            vertical_lines[i] += key * len(chars) + ' '
+                        else:
+                            vertical_lines[i] += ' ' * len(chars) + ' '
+                    elapsed_ticks = 0
+                    del current_notes[msg.note]
+
+        # Ausgabe der fertigen Zeilen
+        for line in vertical_lines:
+            f.write(line.rstrip() + '\n')
+    """
+    
+def midi_to_ascii(input_file, output_file):
+    midi = mido.MidiFile(input_file)
+
+    vertical_lines = ['' for _ in range(8)]
+
+    for track in midi.tracks:
+        elapsed_ticks = 0
+        current_notes = {}
+
+        for msg in track:
+            elapsed_ticks += msg.time
+
+            if msg.type == 'note_on' and msg.velocity > 0:
+                current_notes[msg.note] = elapsed_ticks
+                elapsed_ticks = 0
+
+            elif (msg.type == 'note_off' or (msg.type == 'note_on' and msg.velocity == 0)) and msg.note in current_notes:
+                duration_ticks = elapsed_ticks
+                nearest_tick = nearest_duration(duration_ticks)
+                chars = 'X' * durationMap[nearest_tick]
+                note_name = midi_note_to_name(msg.note)
+                fingering = sax_fingerings.get(note_name, [' '] * 8)
+
+                for i, key in enumerate(fingering):
+                    if key == 'X':
+                        vertical_lines[i] += chars
+                    elif key in ('O', '^', 'U'):
+                        vertical_lines[i] += key * len(chars)
+                    else:
+                        vertical_lines[i] += ' ' * len(chars)
+                    vertical_lines[i] += '|'  # <-- Noten-Trennzeichen hinzugefügt
+
+                elapsed_ticks = 0
+                del current_notes[msg.note]
+
+    with open(output_file, 'w') as f:
+        for line in vertical_lines:
+            f.write(line.rstrip('|') + '\n')  # letztes '|' entfernen
+            
+midi_to_ascii('hallelujah.mid', 'hallelujah.txt')
+ascii_to_pdf('hallelujah.txt','hallelujah.pdf')
