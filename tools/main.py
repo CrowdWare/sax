@@ -198,5 +198,5 @@ def midi_to_ascii(input_file, output_file):
         for line in vertical_lines:
             f.write(line.rstrip('|') + '\n')  # letztes '|' entfernen
             
-midi_to_ascii('hallelujah.mid', 'hallelujah.txt')
-ascii_to_pdf('hallelujah.txt','hallelujah.pdf')
+midi_to_ascii('jinglebells.midi', 'jinglebells.txt')
+ascii_to_pdf('jinglebells.txt','jinglebells.pdf')
