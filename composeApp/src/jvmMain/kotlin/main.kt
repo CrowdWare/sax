@@ -17,31 +17,31 @@
  *  along with Sax.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import java.awt.Dimension
 import at.crowdware.sax.App
 import at.crowdware.sax.Version
-import at.crowdware.sax.theme.LocalThemeIsDark
 import at.crowdware.sax.ui.aboutDialog
 import at.crowdware.sax.viewmodel.GlobalAppState
+import at.crowdware.sax.viewmodel.State
 import at.crowdware.sax.viewmodel.createAppState
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.awt.Desktop
+import java.awt.Dimension
 import java.awt.Frame
 import java.awt.Window
 import java.io.File
 import java.io.IOException
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import at.crowdware.sax.viewmodel.State
+
 
 fun main() = application {
     val appName = "Playful Sax"
